@@ -1,0 +1,73 @@
+@tailwind base;
+@tailwind components;
+@tailwind utilities;
+
+html {
+  scroll-behavior: smooth;
+}
+
+body {
+  background-color: theme("colors.paper.DEFAULT");
+  color: theme("colors.ink.DEFAULT");
+}
+
+@keyframes page-enter {
+  from {
+    opacity: 0;
+    transform: translateY(8px);
+  }
+  to {
+    opacity: 1;
+    transform: translateY(0);
+  }
+}
+
+.page-transition {
+  animation: page-enter 320ms ease-out both;
+}
+
+@keyframes announcement-marquee {
+  to {
+    transform: translateX(-50%);
+  }
+}
+
+.announcement-track {
+  display: flex;
+  width: max-content;
+  animation: announcement-marquee 24s linear infinite;
+  will-change: transform;
+}
+
+.announcement-copy {
+  flex: none;
+  padding-right: 3rem;
+  white-space: nowrap;
+}
+
+@media (prefers-reduced-motion: reduce) {
+  html {
+    scroll-behavior: auto;
+  }
+  .announcement-track {
+    animation: none !important;
+  }
+  *, *::before, *::after {
+    animation-duration: 0.001ms !important;
+    animation-iteration-count: 1 !important;
+    transition-duration: 0.001ms !important;
+  }
+}
+
+/* Visible keyboard focus ring, consistent across the site */
+:focus-visible {
+  outline: 2px solid theme("colors.gold.DEFAULT");
+  outline-offset: 3px;
+  border-radius: 2px;
+}
+
+.grain-panel {
+  background-color: theme("colors.ink.DEFAULT");
+  background-image: theme("backgroundImage.grain");
+  background-size: 18px 18px;
+}
