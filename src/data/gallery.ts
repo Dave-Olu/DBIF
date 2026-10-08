@@ -1,18 +1,46 @@
 import type { GalleryImage } from "@/lib/types";
 
-/**
- * PRD §15: real photos/videos are supplied by DBIF. Until then this
- * generates textured placeholder tiles (see GalleryGrid component) so the
- * layout and admin workflow (§10) can be demonstrated without stand-in
- * stock photography.
- */
 export const galleryImages: GalleryImage[] = [
-  { id: "g1", alt: "Sunday worship service", category: "worship" },
-  { id: "g2", alt: "Community outreach", category: "outreach" },
-  { id: "g3", alt: "Leadership summit", category: "conference" },
-  { id: "g4", alt: "Youth fellowship gathering", category: "community" },
-  { id: "g5", alt: "Marriage seminar", category: "conference" },
-  { id: "g6", alt: "Children's ministry class", category: "community" },
-  { id: "g7", alt: "Crossover vigil", category: "worship" },
-  { id: "g8", alt: "Branch dedication", category: "outreach" },
+  {
+    id: "youth-learning-session",
+    src: "/gallery/youth-learning-session.png",
+    alt: "Young people gathered for a learning session",
+    category: "outreach",
+  },
+  {
+    id: "school-community-outreach",
+    src: "/gallery/school-community-outreach.png",
+    alt: "Students and fellowship members during a school visit",
+    category: "outreach",
+  },
+  {
+    id: "community-fellowship",
+    src: "/gallery/community-fellowship.png",
+    alt: "Community members gathered for fellowship",
+    category: "community",
+  },
+  {
+    id: "worship-service",
+    src: "/gallery/worship-service.png",
+    alt: "Members gathered in worship at a fellowship service",
+    category: "worship",
+  },
+  {
+    id: "evening-fellowship-gathering",
+    src: "/gallery/evening-fellowship-gathering.png",
+    alt: "An evening fellowship gathering",
+    category: "worship",
+  },
+  {
+    id: "ministry-book-gathering",
+    src: "/gallery/ministry-book-gathering.png",
+    alt: "Fellowship members celebrating a ministry book",
+    category: "community",
+  },
+  {
+    id: "lagos-mainland-gathering",
+    src: "/gallery/lagos-mainland-gathering.png",
+    alt: "Fellowship members gathered at the Lagos Mainland location",
+    category: "community",
+  },
 ];

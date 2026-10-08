@@ -40,8 +40,8 @@ export const collections: Record<CollectionName, CollectionDef> = {
     fields: [
       { name: "title", label: "Title", type: "text", required: true },
       { name: "speaker", label: "Speaker", type: "text", required: true },
-      { name: "date", label: "Date", type: "date", required: true },
-      { name: "category", label: "Category", type: "text", required: true, hint: "e.g. Leadership, Relationship, Finance" },
+      { name: "date", label: "Date", type: "date" },
+      { name: "category", label: "Category", type: "text", required: true, hint: "e.g. Marriage, Finance/Business, Leadership, Deliverance, Prayer" },
       { name: "scripture", label: "Scripture reference", type: "text" },
       { name: "description", label: "Description", type: "textarea", required: true },
       { name: "videoUrl", label: "Video link", type: "url", hint: "Optional. https:// only" },

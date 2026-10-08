@@ -50,7 +50,7 @@ export interface Sermon {
   slug: string;
   title: string;
   speaker: string;
-  date: string;
+  date: string | null;
   category: string;
   scripture: string | null;
   description: string;
@@ -79,6 +79,7 @@ export interface Partner {
 
 export interface GalleryImage {
   id: string;
+  src: string;
   alt: string;
   category: "worship" | "outreach" | "conference" | "community";
 }

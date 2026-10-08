@@ -77,10 +77,10 @@ Implements the flows in `DBIF_System_Flow_and_Features_v1.docx`.
 
 1. `cp .env.example .env.local` and fill it in (`SESSION_SECRET`, `ADMIN_USERS`, Paystack key).
 2. `npm run dev`, then sign in at `/admin/login`.
-3. Giving stays off until `GIVING_ENABLED=true` (PRD: subject to leadership approval).
+3. Paystack card giving stays off until `GIVING_ENABLED=true` (PRD: subject to leadership approval). The `/give` page also lists the approved bank-transfer accounts.
 4. In the Paystack dashboard set the webhook URL to `<site>/api/paystack/webhook`.
 
-**Giving flow:** `/give` -> `POST /api/give/initialize` (amount in kobo, unique reference, pending
+**Online giving flow:** `/give` -> `POST /api/give/initialize` (amount in kobo, unique reference, pending
 ledger entry) -> Paystack checkout -> return page and webhook both call `confirmPayment()`
 (`src/lib/paystack.ts`), the only place a payment becomes "success". It requires Paystack to report
 success and the amount and currency to match. Webhooks are rejected without a valid HMAC-SHA512

@@ -14,7 +14,16 @@ export const primaryNav = [
   { label: "Locations", href: "/locations" },
   { label: "Programs", href: "/programs" },
   { label: "Events", href: "/events" },
-  { label: "Sermons", href: "/sermons" },
+  {
+    label: "Sermons",
+    href: "/sermons",
+    children: [
+      { label: "Marriage", href: "/sermons#marriage" },
+      { label: "Finance/Business", href: "/sermons#finance-business" },
+      { label: "Leadership", href: "/sermons#leadership" },
+      { label: "Deliverance", href: "/sermons#deliverance" },
+    ],
+  },
   { label: "Testimonies", href: "/testimonies" },
   { label: "Gallery", href: "/gallery" },
   { label: "Partnerships", href: "/partnerships" },

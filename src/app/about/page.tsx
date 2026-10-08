@@ -2,7 +2,7 @@ import type { Metadata } from "next";
 import Link from "next/link";
 import { PageHeader } from "@/components/PageHeader";
 import { Container } from "@/components/Container";
-import { site, organizationalHistory, aboutAuthor } from "@/data/site";
+import { site, organizationalHistory } from "@/data/site";
 
 export const metadata: Metadata = {
   title: "About",
@@ -22,21 +22,20 @@ export default function AboutPage() {
     <>
       <PageHeader
         title="About DBIF"
-        intro={`${site.name} started from small prayer gatherings in Lagos in ${site.foundedYear} and has grown into a ministry with a presence across Southwestern Nigeria, Kwara State, and an online community in the diaspora.`}
+        intro={`${site.name} is a Christian fellowship rooted in prayer, discipleship, and helping people build purposeful lives grounded in biblical truth.`}
       />
       <Container className="py-16 sm:py-20">
         <p className="max-w-2xl text-ink/70">{organizationalHistory.nameChangeReason}</p>
 
         <section className="mt-12 rounded border border-ink/10 bg-paper-dim p-6 sm:p-8">
-          <h2 className="font-display text-3xl font-medium text-ink">About the Author</h2>
-          <div className="mt-4">
-            <p className="font-display text-xl font-medium text-ink">{aboutAuthor.name}</p>
-            <p className="mt-1 text-sm uppercase tracking-[0.08em] text-ink/60">{aboutAuthor.title}</p>
-          </div>
+          <h2 className="font-display text-3xl font-medium text-ink">Our vision</h2>
           <div className="mt-5 space-y-4 text-base leading-relaxed text-ink/75">
-            {aboutAuthor.bio.map((paragraph) => (
-              <p key={paragraph}>{paragraph}</p>
-            ))}
+            <p>
+              DBIF seeks to help individuals discover purpose, grow in character, and live in a way that reflects God&apos;s design for family, leadership, stewardship, and community.
+            </p>
+            <p>
+              The fellowship is built around discipleship, relationship-building, practical teaching, and service that strengthens both the individual and the body of Christ.
+            </p>
           </div>
         </section>
 

@@ -49,7 +49,7 @@ export async function getEvent(slug: string) {
 
 export async function getSermons(): Promise<Sermon[]> {
   const list = (await listItems("sermons")) as unknown as Sermon[];
-  return [...list].sort((a, b) => b.date.localeCompare(a.date));
+  return [...list].sort((a, b) => (b.date ?? "").localeCompare(a.date ?? ""));
 }
 export async function getSermon(slug: string) {
   return (await getSermons()).find((s) => s.slug === slug);

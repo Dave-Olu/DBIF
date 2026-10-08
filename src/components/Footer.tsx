@@ -1,6 +1,6 @@
 import Link from "next/link";
 import Image from "next/image";
-import logoUrl from "@/app/gallery/Logo.jpeg";
+import logoUrl from "@/app/gallery/Logo.png";
 import { footerLinks } from "@/data/navigation";
 import { site } from "@/data/site";
 import { getSettings } from "@/lib/content";
@@ -45,7 +45,8 @@ function SocialIcon({ name }: { name: string }) {
     case "whatsapp":
       return (
         <svg viewBox="0 0 24 24" fill="none" className={commonClassName} aria-hidden="true">
-          <path d="M7.5 17.5 5.8 19.2a.8.8 0 0 1-1.3-.6V17c-1.2-1.7-1.7-3.7-1.7-5.8A8.5 8.5 0 0 1 11.3 2.5a8.5 8.5 0 0 1 8.2 8.2c0 4.8-4.1 8.8-9 8.8h-.1c-1.1 0-2.1-.3-3-.7l-1.1-.5Zm8.8-8.6c-.2-1.1-1.2-1.7-2.4-1.9-.5-.1-1-.1-1.3-.1-1.1 0-1.8.3-2.4.9-.7.8-.9 1.6-.9 2.8 0 .8.2 1.7.6 2.6l.4.9-.6 1.9 1.9-.5.8.4c1.1.6 2.1.8 3.2.8 1.1 0 2-.3 2.7-.9.9-.8 1.2-1.8 1.1-3.1-.1-1-.8-1.7-1.9-2.1Zm-2.6 5.9c-.8 0-1.5-.2-2.1-.7l-.2-.1-.9.2-.7-1.5.5-.8-.1-.2c-.5-1-.5-2.2.2-3.1.6-.8 1.6-1.1 2.8-1.1.9 0 1.8.2 2.6.7.8.5 1.3 1.2 1.5 2.1.1.7 0 1.5-.4 2.2-.5.9-1.4 1.4-2.5 1.7l-.2.1-.1 0Z" fill="currentColor" stroke="none" />
+          <path d="M20.3 11.6a8.3 8.3 0 0 1-12.2 7.3L3.7 20l1.2-4.2a8.3 8.3 0 1 1 15.4-4.2Z" strokeWidth="1.7" strokeLinecap="round" strokeLinejoin="round" />
+          <path d="M8.6 8.1c.2-.5.5-.6.8-.6h.6c.2 0 .4.1.5.4l.8 1.8c.1.2.1.4-.1.6l-.6.7c-.2.2-.2.4 0 .6.5.8 1.2 1.5 2.1 2 .2.1.4.1.6-.1l.7-.8c.2-.2.4-.2.6-.1l1.7.8c.3.1.4.3.4.5 0 .4-.2 1.1-.7 1.5-.5.4-1.1.6-1.8.4-1-.2-2.3-.8-3.6-2-1.1-1-1.8-2.2-2-3.1-.2-.8 0-1.4.4-2 .2-.3.4-.5.6-.6Z" fill="currentColor" stroke="none" />
         </svg>
       );
     default:
@@ -55,7 +56,12 @@ function SocialIcon({ name }: { name: string }) {
 
 export async function Footer() {
   const { contact, social } = await getSettings();
-  const socials = Object.entries(social).filter(([, v]) => v) as [string, string][];
+  const socials = Object.entries({
+    ...site.social,
+    ...Object.fromEntries(
+      Object.entries(social).filter(([, url]) => url)
+    ),
+  }).filter((entry): entry is [string, string] => Boolean(entry[1]));
   const socialLinks = [...(contact.whatsapp ? ([["whatsapp", contact.whatsapp]] as [string, string][]) : []), ...socials];
 
   return (
@@ -101,17 +107,18 @@ export async function Footer() {
                 {contact.phone ?? ""}
               </a>
             </li>
-            <li className="flex items-center gap-3 pt-1">
+            <li className="flex flex-wrap items-center gap-3 pt-1">
               {socialLinks.map(([name, url]) => (
                 <a
                   key={name}
                   href={url}
                   rel="noopener noreferrer"
                   target="_blank"
-                  aria-label={name}
-                  className="flex h-8 w-8 items-center justify-center rounded-full border border-paper/20 bg-paper/5 text-paper transition-colors hover:border-paper/40 hover:text-paper"
+                  aria-label={`Follow DBIF on ${name}`}
+                  className="flex items-center gap-2 rounded-full border border-paper/20 bg-paper/5 px-3 py-2 text-paper transition-colors hover:border-paper/40 hover:bg-paper/10"
                 >
                   <SocialIcon name={name} />
+                  <span className="text-xs capitalize">{name}</span>
                 </a>
               ))}
             </li>

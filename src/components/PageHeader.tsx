@@ -1,11 +1,14 @@
-import logoUrl from "@/app/gallery/Logo.jpeg";
+import Image from "next/image";
+import logoUrl from "@/app/gallery/Logo.png";
 import { Container } from "@/components/Container";
 
 export function PageHeader({ title, intro }: { title: string; intro?: string }) {
   return (
     <section className="grain-panel text-paper">
       <Container className="py-16 sm:py-20">
-        <img src={logoUrl.src} alt="Destiny Builders International Fellowship logo" className="h-20 w-auto object-contain" />
+        <div className="relative h-20 w-20 overflow-hidden">
+          <Image src={logoUrl} alt="Destiny Builders International Fellowship logo" className="object-contain" fill sizes="80px" />
+        </div>
         <h1 className="mt-4 font-display text-4xl font-medium tracking-tight sm:text-5xl">
           {title}
         </h1>

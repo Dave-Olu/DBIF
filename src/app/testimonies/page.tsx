@@ -2,6 +2,7 @@ import type { Metadata } from "next";
 import { PageHeader } from "@/components/PageHeader";
 import { Container } from "@/components/Container";
 import { Button } from "@/components/Button";
+import { PreviewNotice } from "@/components/PreviewNotice";
 import { TestimonyCard } from "@/components/TestimonyCard";
 import { testimonies } from "@/data/testimonies";
 
@@ -18,6 +19,10 @@ export default function TestimoniesPage() {
         intro="Published with consent. Some are shared anonymously by request."
       />
       <Container narrow className="py-16 sm:py-20">
+        <PreviewNotice
+          title="Testimony preview"
+          message="These personal stories are sample content shown for layout review only. Final testimonies require leadership approval and consent before publication."
+        />
         <div className="space-y-10">
           {testimonies.map((testimony) => (
             <TestimonyCard key={testimony.id} testimony={testimony} />

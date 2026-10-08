@@ -22,7 +22,7 @@ const workSans = Work_Sans({
 });
 
 export const metadata: Metadata = {
-  metadataBase: new URL(site.url),
+  metadataBase: site.url ? new URL(site.url) : undefined,
   title: {
     default: `${site.shortName} — ${site.name}`,
     template: `%s | ${site.shortName}`,
@@ -56,7 +56,7 @@ export default function RootLayout({
           Skip to content
         </a>
         <AnnouncementBar message={site.announcement} />
-        <Header showGive={process.env.GIVING_ENABLED === "true"} />
+        <Header showGive />
         <main id="main-content">
           <PageTransition>{children}</PageTransition>
         </main>

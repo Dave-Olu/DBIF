@@ -2,6 +2,7 @@ import type { Metadata } from "next";
 import { PageHeader } from "@/components/PageHeader";
 import { Container } from "@/components/Container";
 import { Pending } from "@/components/Pending";
+import { ImageWithFallback } from "@/components/ImageWithFallback";
 import { leadershipProfiles } from "@/data/leadership";
 
 export const metadata: Metadata = {
@@ -21,11 +22,16 @@ export default function LeadershipPage() {
             {leadershipProfiles.map((profile, i) => (
               <div key={i} className="border border-ink/12 p-6">
                 {profile.photoUrl ? (
-                  <img
-                    src={profile.photoUrl}
-                    alt={profile.name ?? "Leadership profile photo"}
-                    className="aspect-square w-full rounded object-cover"
-                  />
+                  <div className="relative aspect-square overflow-hidden rounded">
+                    <ImageWithFallback
+                      src={profile.photoUrl}
+                      alt={profile.name ?? "Leadership profile photo"}
+                      fill
+                      fallbackText={profile.name?.slice(0, 2).toUpperCase() || "DBIF"}
+                      sizes="(max-width: 768px) 100vw, (max-width: 1200px) 50vw, 33vw"
+                      className="object-cover"
+                    />
+                  </div>
                 ) : (
                   <div className="flex aspect-square w-full items-center justify-center rounded bg-paper-dim text-3xl font-display font-medium text-ink/70">
                     {profile.name?.charAt(0)?.toUpperCase() ?? "DB"}

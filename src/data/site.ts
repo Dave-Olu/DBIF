@@ -6,13 +6,18 @@
  * Do not replace a `null` with invented text — replace it with the real
  * confirmed value.
  */
+const normalizedSiteUrl = (() => {
+  const value = process.env.NEXT_PUBLIC_SITE_URL?.trim();
+  return value && /^https?:\/\//i.test(value) ? value : "https://www.dbif.example";
+})();
+
 export const site = {
   name: "Destiny Builders International Fellowship",
   shortName: "DBIF",
   formerName: "The Visionaries International Fellowship (VIF)",
   foundedYear: 2019,
-  tagline: "Helping people build the destiny God has given them.",
-  announcement: "Add your announcement here",
+  tagline: "Helping you build your God-given destiny.",
+  announcement: "Website preview — official content and details are still being finalized with DBIF leadership.",
   description:
     "DBIF is a Christian fellowship and ministry with a growing presence across Southwestern Nigeria and Kwara State, and an online community across Nigeria and the diaspora.",
 
@@ -33,15 +38,15 @@ export const site = {
   },
 
   social: {
-    facebook: null as string | null,
+    facebook: "https://www.facebook.com/share/1Er5QbSUUP/",
     instagram: null as string | null,
-    youtube: null as string | null,
+    youtube: "https://youtube.com/@juliusa.awoniyi1958",
     tiktok: null as string | null,
     x: null as string | null,
   },
 
   // §22: preferred domain name — update once confirmed and set NEXT_PUBLIC_SITE_URL accordingly
-  url: process.env.NEXT_PUBLIC_SITE_URL ?? "https://www.dbif.example",
+  url: normalizedSiteUrl,
 };
 
 export const biblicalFoundation = {
@@ -62,10 +67,41 @@ export const biblicalFoundation = {
 export const visionMission = {
   vision:
     "Empowering individuals to build strong relationships, thrive in financial stewardship, and lead with purpose, all rooted in faith, to create a community that reflects the light of salvation and inspires a journey toward eternal fulfillment.",
+
   mission:
     "At Destiny Builders' Int'l Fellowship, we are dedicated to equipping individuals with the knowledge and tools to cultivate meaningful relationships, achieve financial freedom, and develop impactful leadership skills. Through teachings grounded in biblical principles and the transformative power of salvation, we guide our community toward a life of purpose, unity, and an eternal destiny in Heaven.",
-  // §22: official core values — list of { title, description }
-  coreValues: [] as { title: string; description: string }[],
+  coreValues: [
+    {
+      title: "Faith in Christ",
+      description:
+        "We ground our lives and service in biblical principles and the transforming power of salvation.",
+    },
+    {
+      title: "Purposeful Growth",
+      description:
+        "We help people discover their God-given potential and develop the wisdom and skills to fulfil it.",
+    },
+    {
+      title: "Meaningful Relationships",
+      description:
+        "We build relationships marked by love, respect, unity, and a commitment to one another's growth.",
+    },
+    {
+      title: "Faithful Stewardship",
+      description:
+        "We encourage wise, responsible stewardship of the resources, opportunities, and responsibilities entrusted to us.",
+    },
+    {
+      title: "Servant Leadership",
+      description:
+        "We lead with humility and integrity, using our gifts to equip others and serve our communities.",
+    },
+    {
+      title: "Impactful Service",
+      description:
+        "We put faith into action by serving others and making a purposeful, lasting contribution.",
+    },
+  ],
 };
 
 export const organizationalHistory = {
@@ -98,3 +134,19 @@ export const aboutAuthor = {
  * is more than one.
  */
 export const givingPurposes: string[] = ["General giving"];
+
+export const givingAccounts = [
+  {
+    title: "Fellowship tithes, offerings & special donations",
+    bank: "UBA",
+    accountNumber: "1030273262",
+    accountName: "Destiny Builders' Int'l Fellowship",
+  },
+
+  {
+    title: "Pastor's offering",
+    bank: "Zenith Bank Plc",
+    accountNumber: "2252420205",
+    accountName: "Julius A. Awoniyi",
+  },
+];

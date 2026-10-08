@@ -21,7 +21,7 @@ export function SermonListItem({ sermon }: { sermon: Sermon }) {
           <h3 className="font-display text-lg font-medium text-ink group-hover:underline">
             {sermon.title}
           </h3>
-          <span className="text-sm text-ink/50">{formatDate(sermon.date)}</span>
+          {sermon.date && <span className="text-sm text-ink/50">{formatDate(sermon.date)}</span>}
         </div>
         <p className="mt-1 text-sm text-ink/60">
           {sermon.speaker} · {sermon.category}

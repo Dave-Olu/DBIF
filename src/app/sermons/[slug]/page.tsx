@@ -27,12 +27,21 @@ export default async function SermonDetailPage({ params }: { params: { slug: str
         intro={[sermon.speaker, sermon.category, sermon.scripture].filter(Boolean).join(" · ")}
       />
       <Container narrow className="py-16 sm:py-20">
-        <p className="text-sm text-ink/50">{formatDate(sermon.date)}</p>
+        {sermon.date && <p className="text-sm text-ink/50">{formatDate(sermon.date)}</p>}
         <p className="mt-4 text-lg leading-relaxed text-ink/80">{sermon.description}</p>
 
         {(sermon.audioUrl || sermon.videoUrl) && (
           <div className="mt-8 flex flex-wrap gap-3">
-            {sermon.videoUrl && <Button href={sermon.videoUrl}>Watch</Button>}
+            {sermon.videoUrl && (
+              <a
+                href={sermon.videoUrl}
+                target="_blank"
+                rel="noopener noreferrer"
+                className="inline-flex items-center justify-center rounded-sm bg-gold px-5 py-2.5 text-sm font-medium text-ink transition-colors hover:bg-gold-light"
+              >
+                Watch on Telegram
+              </a>
+            )}
             {sermon.audioUrl && <Button href={sermon.audioUrl} variant="secondary">Listen</Button>}
           </div>
         )}
