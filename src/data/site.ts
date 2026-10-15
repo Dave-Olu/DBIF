@@ -33,7 +33,7 @@ export const site = {
     // §22: confirm official phone, WhatsApp, email, social handles
     phone: "+2348035553669",
     whatsapp: "https://wa.me/2348035553669",
-    email: "juliusaawoniyi@gmail.com",
+    email: "dbif2018@gmail.com",
     address: null as string | null, // headquarters/central office, if distinct from branches
   },
 
@@ -123,7 +123,7 @@ export const aboutAuthor = {
   bio: [
     "Julius A. Awoniyi, an unflagging and insightful leader, speaker, author, farmer, fellowship set man, life coach, technical personnel, husband and father is the multi-talented, multi-tasking, multi-dynamic, visionary prolocutor of Destiny Builders’ International Fellowship (DBIF), Sunrise Success Strategy, DBIF Billionaires’ Club, Mentor-Mentee Group, The Singles’ Forum, and The Couples’ Forum; just to mention but a few.",
     "His approaches to life’s situations are simple, pragmatic and unambiguous. As an inspirational speaker, he has been to distinctive places addressing people on the subject of panoramic success and the results have been paradigmatic progress and increase.",
-    "He can be contacted via various social media and written to through his email address: juliusaawoniyi@gmail.com or through his direct line +2348035553669.",
+    "He can be contacted via various social media and written to through his email address: dbif2018@gmail.com or through his direct line +2348035553669.",
   ],
 };
 
