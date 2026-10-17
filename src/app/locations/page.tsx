@@ -17,7 +17,7 @@ export default async function LocationsPage() {
     <>
       <PageHeader
         title="Locations"
-        intro="DBIF has confirmed physical branches across Southwestern Nigeria and Kwara State, and online communities reaching further still. Only confirmed physical branches are listed as branches below."
+        intro="DBIF has confirmed physical branches across Southwestern Nigeria and online communities reaching further still. Only confirmed physical branches are listed as branches below."
       />
       <Container className="py-16 sm:py-20">
         <h2 className="font-display text-2xl font-medium text-ink">Physical branches</h2>

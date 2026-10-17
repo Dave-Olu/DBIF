@@ -12,21 +12,21 @@ const normalizedSiteUrl = (() => {
 })();
 
 export const site = {
-  name: "Destiny Builders International Fellowship",
+  name: "Destiny Builders' International Fellowship",
   shortName: "DBIF",
   formerName: "The Visionaries International Fellowship (VIF)",
   foundedYear: 2019,
   tagline: "Helping you build your God-given destiny.",
   announcement: "Website preview — official content and details are still being finalized with DBIF leadership.",
   description:
-    "DBIF is a Christian fellowship and ministry with a growing presence across Southwestern Nigeria and Kwara State, and an online community across Nigeria and the diaspora.",
+    "DBIF is a Christian fellowship and ministry with a growing presence across Southwestern Nigeria and an online community across Nigeria and the diaspora.",
 
   // §22: confirm CAC registration date and number
   cacRegistrationNumber: null as string | null,
   cacRegistrationDate: null as string | null,
 
   // §22: confirm founder/General Overseer's official name and title
-  founderName: null as string | null,
+  founderName: "Julius A. Awoniyi",
   founderTitle: null as string | null,
 
   contact: {
@@ -34,7 +34,7 @@ export const site = {
     phone: "+2348035553669",
     whatsapp: "https://wa.me/2348035553669",
     email: "dbif2018@gmail.com",
-    address: null as string | null, // headquarters/central office, if distinct from branches
+    address: "Road 3, Zone E Ayegbami Olofana Community, Kobo, Oshogbo, Osun State", // headquarters/central office, if distinct from branches
   },
 
   social: {
@@ -122,6 +122,7 @@ export const aboutAuthor = {
   title: "Visionary Prolocutor of Destiny Builders’ International Fellowship",
   bio: [
     "Julius A. Awoniyi, an unflagging and insightful leader, speaker, author, farmer, fellowship set man, life coach, technical personnel, husband and father is the multi-talented, multi-tasking, multi-dynamic, visionary prolocutor of Destiny Builders’ International Fellowship (DBIF), Sunrise Success Strategy, DBIF Billionaires’ Club, Mentor-Mentee Group, The Singles’ Forum, and The Couples’ Forum; just to mention but a few.",
+    
     "His approaches to life’s situations are simple, pragmatic and unambiguous. As an inspirational speaker, he has been to distinctive places addressing people on the subject of panoramic success and the results have been paradigmatic progress and increase.",
     "He can be contacted via various social media and written to through his email address: dbif2018@gmail.com or through his direct line +2348035553669.",
   ],
