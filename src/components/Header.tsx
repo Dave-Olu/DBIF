@@ -50,7 +50,7 @@ export function Header({ showGive = false }: { showGive?: boolean }) {
           </div>
           <span className="max-w-[12rem] min-w-0 sm:max-w-[16rem] lg:max-w-[11rem] xl:max-w-none">
             <span className="block font-display text-sm font-bold leading-none tracking-tight text-ink lg:text-[0.8125rem] xl:text-sm">
-              Destiny Builders'
+              <p>Destiny Builders&apos;</p>
             </span>
             <span className="mt-0.5 block font-body text-[0.625rem] font-semibold uppercase leading-none tracking-[0.08em] text-ink/65 lg:text-[0.55rem] xl:text-[0.625rem]">
               International Fellowship
