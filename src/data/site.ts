@@ -17,6 +17,7 @@ export const site = {
   formerName: "The Visionaries International Fellowship (VIF)",
   foundedYear: 2019,
   tagline: "Helping you build your God-given destiny.",
+  motto: "Relationship, Leadership & Finance",
   announcement: "Website preview — official content and details are still being finalized with DBIF leadership.",
   description:
     "DBIF is a Christian fellowship and ministry with a growing presence across Southwestern Nigeria and an online community across Nigeria and the diaspora.",

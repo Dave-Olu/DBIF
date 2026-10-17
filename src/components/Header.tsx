@@ -45,11 +45,19 @@ export function Header({ showGive = false }: { showGive?: boolean }) {
     <header className="sticky top-0 z-40 border-b border-ink/10 bg-paper/95 backdrop-blur">
       <Container className="flex h-16 items-center justify-between">
         <Link href="/" className="flex min-w-0 items-center gap-2" onClick={closeNavigation}>
-          <div className="relative h-12 w-12 shrink-0 overflow-hidden">
-            <Image src={logoUrl} alt={`${site.name} logo`} className="object-contain" fill sizes="48px" />
+          <div className="relative h-14 w-14 shrink-0 overflow-hidden rounded-md bg-white shadow-sm ring-1 ring-ink/10">
+            <Image src={logoUrl} alt={`${site.name} logo`} className="object-contain" fill sizes="56px" />
           </div>
-          <span className="max-w-[12rem] font-display text-sm font-semibold leading-tight tracking-tight text-ink sm:max-w-[16rem] lg:max-w-[10rem] lg:text-xs xl:max-w-none xl:whitespace-nowrap xl:text-sm">
-            {site.name}
+          <span className="max-w-[12rem] min-w-0 sm:max-w-[16rem] lg:max-w-[11rem] xl:max-w-none">
+            <span className="block font-display text-sm font-bold leading-none tracking-tight text-ink lg:text-[0.8125rem] xl:text-sm">
+              Destiny Builders'
+            </span>
+            <span className="mt-0.5 block font-body text-[0.625rem] font-semibold uppercase leading-none tracking-[0.08em] text-ink/65 lg:text-[0.55rem] xl:text-[0.625rem]">
+              International Fellowship
+            </span>
+            <span className="mt-1 block font-body text-[0.625rem] font-semibold leading-tight text-forest sm:text-xs lg:text-[0.625rem]">
+              {site.motto}
+            </span>
           </span>
         </Link>
 

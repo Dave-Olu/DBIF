@@ -69,7 +69,9 @@ export async function Footer() {
       <div className="mx-auto grid max-w-6xl gap-10 px-6 py-14 sm:px-8 lg:grid-cols-[1.3fr_1fr_1fr]">
         <div>
           <div className="flex items-center gap-2">
-            <Image src={logoUrl} alt={`${site.name} logo`} className="h-10 w-auto object-contain" />
+            <span className="inline-flex h-16 w-16 shrink-0 items-center justify-center overflow-hidden rounded-md bg-white shadow-sm ring-1 ring-paper/20">
+              <Image src={logoUrl} alt={`${site.name} logo`} className="h-full w-full object-contain" />
+            </span>
             <span className="font-display text-lg font-semibold">{site.shortName}</span>
           </div>
           <p className="mt-4 max-w-sm text-sm leading-relaxed text-paper/70">

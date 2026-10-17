@@ -7,6 +7,7 @@ import { AnnouncementBar } from "@/components/AnnouncementBar";
 import { FloatingActions } from "@/components/FloatingActions";
 import { PageTransition } from "@/components/PageTransition";
 import { site } from "@/data/site";
+import logoUrl from "@/app/gallery/Logo.png";
 
 const fraunces = Fraunces({
   subsets: ["latin"],
@@ -26,6 +27,9 @@ export const metadata: Metadata = {
   title: {
     default: `${site.shortName} — ${site.name}`,
     template: `%s | ${site.shortName}`,
+  },
+  icons: {
+    icon: logoUrl.src,
   },
   description: site.description,
   openGraph: {
