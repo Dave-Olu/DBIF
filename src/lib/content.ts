@@ -72,7 +72,14 @@ export async function getOnlineCommunities(): Promise<Location[]> {
 
 export interface Settings {
   contact: { phone: string | null; whatsapp: string | null; email: string | null; address: string | null };
-  social: { facebook: string | null; instagram: string | null; youtube: string | null; tiktok: string | null; x: string | null };
+  social: {
+    facebookGroup: string | null;
+    facebookPage: string | null;
+    instagram: string | null;
+    youtube: string | null;
+    tiktok: string | null;
+    x: string | null;
+  };
 }
 
 const seedSettings = (): Settings => ({

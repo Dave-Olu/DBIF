@@ -65,7 +65,22 @@ export function Header({ showGive = false }: { showGive?: boolean }) {
           {desktopNavItems.map((item) => {
             const active = pathname === item.href || pathname.startsWith(item.href + "/");
             return (
-              <div key={item.href} className="relative">
+              <div
+                key={item.href}
+                className="relative"
+                onMouseEnter={() => setOpenDropdown(item.href)}
+                onMouseLeave={(event) => {
+                  if (!event.currentTarget.contains(document.activeElement)) {
+                    setOpenDropdown((current) => current === item.href ? null : current);
+                  }
+                }}
+                onFocusCapture={() => setOpenDropdown(item.href)}
+                onBlurCapture={(event) => {
+                  if (!event.currentTarget.contains(event.relatedTarget instanceof Node ? event.relatedTarget : null)) {
+                    setOpenDropdown(null);
+                  }
+                }}
+              >
                 <Link
                   href={item.href}
                   aria-current={pathname === item.href ? "page" : undefined}
@@ -83,11 +98,11 @@ export function Header({ showGive = false }: { showGive?: boolean }) {
                   <>
                     <button
                       type="button"
-                      aria-label={`Toggle ${item.label} submenu`}
+                      aria-label={`Open ${item.label} submenu`}
                       aria-controls={`desktop-submenu-${item.href.slice(1).replaceAll("/", "-")}`}
                       aria-expanded={openDropdown === item.href}
-                      onClick={() => setOpenDropdown((current) => current === item.href ? null : item.href)}
-                      className="ml-0.5 inline-flex h-6 w-6 items-center justify-center rounded-full text-ink/70 hover:bg-paper hover:text-ink xl:h-7 xl:w-7"
+                      onClick={() => setOpenDropdown(item.href)}
+                      className="ml-0.5 inline-flex h-6 w-6 items-center justify-center rounded-full text-ink/70 transition-colors hover:bg-paper hover:text-forest xl:h-7 xl:w-7"
                     >
                       <svg viewBox="0 0 20 20" className={cx("h-4 w-4 transition-transform", openDropdown === item.href && "rotate-180")} fill="none" stroke="currentColor" strokeWidth={1.8} aria-hidden="true">
                         <path d="m5 7.5 5 5 5-5" strokeLinecap="round" strokeLinejoin="round" />
@@ -95,15 +110,20 @@ export function Header({ showGive = false }: { showGive?: boolean }) {
                     </button>
                     <div
                       id={`desktop-submenu-${item.href.slice(1).replaceAll("/", "-")}`}
-                      hidden={openDropdown !== item.href}
-                      className="absolute left-0 top-full min-w-[220px] rounded-sm border border-ink/10 bg-paper py-2 shadow-lg shadow-ink/5"
+                      aria-hidden={openDropdown !== item.href}
+                      className={cx(
+                        "absolute left-0 top-full z-50 min-w-[200px] rounded-xl border border-ink/10 bg-paper/95 p-2 shadow-xl shadow-ink/15 backdrop-blur transition-all duration-200 ease-out before:absolute before:inset-x-4 before:top-0 before:h-0.5 before:rounded-full before:bg-gradient-to-r before:from-gold before:via-forest before:to-gold",
+                        openDropdown === item.href
+                          ? "visible translate-y-0 opacity-100"
+                          : "invisible pointer-events-none -translate-y-2 opacity-0"
+                      )}
                     >
                       {item.children.map((child) => (
                         <Link
                           key={child.href}
                           href={child.href}
                           onClick={closeNavigation}
-                          className="block px-4 py-2 text-sm text-ink/75 hover:bg-paper-dim hover:text-ink"
+                          className="block rounded-lg px-4 py-2.5 text-sm text-ink/75 transition-all duration-150 hover:translate-x-1 hover:bg-paper-dim hover:text-forest"
                         >
                           {child.label}
                         </Link>
@@ -114,13 +134,27 @@ export function Header({ showGive = false }: { showGive?: boolean }) {
               </div>
             );
           })}
-          <div className="relative">
+          <div
+            className="relative"
+            onMouseEnter={() => setOpenDropdown("more")}
+            onMouseLeave={(event) => {
+              if (!event.currentTarget.contains(document.activeElement)) {
+                setOpenDropdown((current) => current === "more" ? null : current);
+              }
+            }}
+            onFocusCapture={() => setOpenDropdown("more")}
+            onBlurCapture={(event) => {
+              if (!event.currentTarget.contains(event.relatedTarget instanceof Node ? event.relatedTarget : null)) {
+                setOpenDropdown(null);
+              }
+            }}
+          >
             <button
               type="button"
               aria-controls="desktop-submenu-more"
               aria-label="Toggle More navigation submenu"
               aria-expanded={openDropdown === "more"}
-              onClick={() => setOpenDropdown((current) => current === "more" ? null : "more")}
+              onClick={() => setOpenDropdown("more")}
               className={cx(
                 "inline-flex items-center gap-1 rounded-full px-2 py-2 text-xs font-medium transition-colors xl:px-3 xl:text-sm",
                 overflowItems.some((item) => pathname === item.href || pathname.startsWith(item.href + "/"))
@@ -135,15 +169,20 @@ export function Header({ showGive = false }: { showGive?: boolean }) {
             </button>
             <div
               id="desktop-submenu-more"
-              hidden={openDropdown !== "more"}
-              className="absolute left-0 top-full min-w-[190px] rounded-sm border border-ink/10 bg-paper py-2 shadow-lg shadow-ink/5"
+              aria-hidden={openDropdown !== "more"}
+              className={cx(
+                "absolute left-0 top-full z-50 min-w-[180px] rounded-xl border border-ink/10 bg-paper/95 p-2 shadow-xl shadow-ink/15 backdrop-blur transition-all duration-200 ease-out before:absolute before:inset-x-4 before:top-0 before:h-0.5 before:rounded-full before:bg-gradient-to-r before:from-gold before:via-forest before:to-gold",
+                openDropdown === "more"
+                  ? "visible translate-y-0 opacity-100"
+                  : "invisible pointer-events-none -translate-y-2 opacity-0"
+              )}
             >
               {overflowItems.map((item) => (
                 <Link
                   key={item.href}
                   href={item.href}
                   onClick={closeNavigation}
-                  className="block px-4 py-2 text-sm text-ink/75 hover:bg-paper-dim hover:text-ink"
+                  className="block rounded-lg px-4 py-2.5 text-sm text-ink/75 transition-all duration-150 hover:translate-x-1 hover:bg-paper-dim hover:text-forest"
                 >
                   {item.label}
                 </Link>
@@ -221,16 +260,23 @@ export function Header({ showGive = false }: { showGive?: boolean }) {
                         <path d="m5 7.5 5 5 5-5" strokeLinecap="round" strokeLinejoin="round" />
                       </svg>
                     </button>
-                    {openDropdown === item.href && (
-                      <div
-                        id={`mobile-submenu-${item.href.slice(1).replaceAll("/", "-")}`}
-                        className="ml-3 flex flex-col border-l border-ink/10 pl-3"
-                      >
+                    <div
+                      id={`mobile-submenu-${item.href.slice(1).replaceAll("/", "-")}`}
+                      aria-hidden={openDropdown !== item.href}
+                      className={cx(
+                        "ml-3 w-fit max-w-[calc(100vw-4.5rem)] overflow-hidden rounded-xl border border-ink/10 bg-paper-dim/60 shadow-md shadow-ink/5 transition-all duration-300 ease-out",
+                        openDropdown === item.href
+                          ? "visible mb-2 max-h-64 translate-y-0 p-2 opacity-100"
+                          : "invisible pointer-events-none max-h-0 -translate-y-2 border-transparent p-0 opacity-0"
+                      )}
+                    >
+                      <div className="flex flex-col border-l-2 border-forest/30 pl-2">
                         <Link
                           href={item.href}
                           aria-current={pathname === item.href ? "page" : undefined}
                           onClick={closeNavigation}
-                          className="py-1.5 text-sm font-medium text-ink/80"
+                          tabIndex={openDropdown === item.href ? 0 : -1}
+                          className="rounded-lg px-3 py-2 text-sm font-medium text-ink/80 transition-colors hover:bg-paper hover:text-forest"
                         >
                           {item.label} overview
                         </Link>
@@ -240,13 +286,14 @@ export function Header({ showGive = false }: { showGive?: boolean }) {
                             href={child.href}
                             aria-current={pathname === child.href ? "page" : undefined}
                             onClick={closeNavigation}
-                            className="py-1.5 text-sm text-ink/70"
+                            tabIndex={openDropdown === item.href ? 0 : -1}
+                            className="rounded-lg px-3 py-2 text-sm text-ink/70 transition-colors hover:bg-paper hover:text-forest"
                           >
                             {child.label}
                           </Link>
                         ))}
                       </div>
-                    )}
+                    </div>
                   </>
                 )}
                 {!item.children && (

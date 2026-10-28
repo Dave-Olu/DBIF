@@ -40,5 +40,14 @@ export function ImageWithFallback({
     onError?.(event);
   };
 
-  return <Image {...props} src={currentSrc} alt={alt} onError={handleError} />;
+  const isRemoteImage = typeof currentSrc === "string" && currentSrc.startsWith("https://");
+  return (
+    <Image
+      {...props}
+      src={currentSrc}
+      alt={alt}
+      unoptimized={props.unoptimized ?? isRemoteImage}
+      onError={handleError}
+    />
+  );
 }

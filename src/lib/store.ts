@@ -1,20 +1,34 @@
 import { promises as fs } from "fs";
 import path from "path";
+import postgres from "postgres";
 
 /**
- * Minimal JSON-file store used for admin-editable content, the donations
- * ledger, and contact submissions.
- *
- * It works on any host with a persistent, writable disk (VPS, Docker volume,
- * local dev). It does NOT persist on read-only/serverless hosts such as
- * Vercel. Before deploying there, replace readJson/updateJson with a managed
- * database (Supabase/Neon per PRD §24); every caller goes through these two
- * functions, so that is the only file that has to change.
+ * Supabase Postgres is the persistent store in hosted environments. The local
+ * JSON adapter remains available for development without database credentials.
  */
 const DIR = process.env.DATA_DIR || path.join(process.cwd(), ".data");
 const chains = new Map<string, Promise<unknown>>();
+let database: ReturnType<typeof postgres> | undefined;
 
 export const getDataDirectory = () => DIR;
+
+function getDatabase() {
+  const connectionString = process.env.DATABASE_URL;
+  if (!connectionString) {
+    if (process.env.VERCEL) {
+      throw new Error("DATABASE_URL must be configured for persistent content on Vercel.");
+    }
+    return undefined;
+  }
+  database ??= postgres(connectionString, {
+    max: 1,
+    idle_timeout: 20,
+    connect_timeout: 10,
+    prepare: false,
+    ssl: "require",
+  });
+  return database;
+}
 
 async function readRaw<T>(name: string): Promise<T | undefined> {
   try {
@@ -26,10 +40,22 @@ async function readRaw<T>(name: string): Promise<T | undefined> {
 }
 
 export async function readJson<T>(name: string, seed: () => T): Promise<T> {
+  const db = getDatabase();
+  if (db) {
+    const rows = await db<{ data: T }[]>`SELECT data FROM public.content_store WHERE key = ${name}`;
+    return rows[0]?.data ?? seed();
+  }
   return (await readRaw<T>(name)) ?? seed();
 }
 
 export async function readString(name: string, seed: () => string): Promise<string> {
+  const db = getDatabase();
+  if (db) {
+    const rows = await db<{ data: unknown }[]>`SELECT data FROM public.content_store WHERE key = ${name}`;
+    const value = rows[0]?.data;
+    return typeof value === "string" ? value : value === undefined ? seed() : JSON.stringify(value);
+  }
+
   let contents: string;
   try {
     contents = await fs.readFile(path.join(DIR, `${name}.json`), "utf8");
@@ -57,6 +83,30 @@ export function updateJson<T>(
   const next = prev
     .catch(() => undefined)
     .then(async () => {
+      const db = getDatabase();
+      if (db) {
+        const transactionResult = await db.begin(async (transaction) => {
+          await transaction`
+            INSERT INTO public.content_store (key, data)
+            VALUES (${name}, ${JSON.stringify(seed())}::jsonb)
+            ON CONFLICT (key) DO NOTHING
+          `;
+          const rows = await transaction<{ data: T }[]>`
+            SELECT data FROM public.content_store WHERE key = ${name} FOR UPDATE
+          `;
+          const current = rows[0]?.data;
+          if (current === undefined) throw new Error(`Could not load content store entry "${name}".`);
+          const out = await fn(current);
+          await transaction`
+            UPDATE public.content_store
+            SET data = ${JSON.stringify(out)}::jsonb, updated_at = now()
+            WHERE key = ${name}
+          `;
+          return { value: out };
+        });
+        return transactionResult.value;
+      }
+
       const current = (await readRaw<T>(name)) ?? seed();
       const out = await fn(current);
       await fs.mkdir(DIR, { recursive: true });

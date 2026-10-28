@@ -29,10 +29,10 @@ src/
   lib/            Shared types (types.ts) and helpers (utils.ts).
 ```
 
-There's no CMS or database wired in yet (PRD §23 recommends Sanity.io for
-content, with a managed Postgres option for structured/relational data).
-Until that's connected, everything in `src/data/` is the content source —
-edit those files directly to change what the site shows.
+The website's starting content lives in `src/data/`. Admin-editable content
+uses the local JSON store during development by default, or Supabase Postgres
+and Storage when configured. See the Vercel persistence setup
+below before deploying admin features.
 
 ## Content that still needs DBIF leadership's input
 
@@ -82,6 +82,36 @@ Implements the flows in `DBIF_System_Flow_and_Features_v1.docx`.
 3. Paystack card giving stays off until `GIVING_ENABLED=true` (PRD: subject to leadership approval). The `/give` page also lists the approved bank-transfer accounts.
 4. In the Paystack dashboard set the webhook URL to `<site>/api/paystack/webhook`.
 
+**Vercel persistence (Supabase)**
+
+Vercel functions do not have a persistent local filesystem. For hosted deployments, configure these
+environment variables in Vercel for every environment you use:
+
+- `DATABASE_URL`: Supabase session pooler connection string (keep the database password private).
+- `SUPABASE_URL`: project URL, such as `https://<project-ref>.supabase.co`.
+- `SUPABASE_SERVICE_ROLE_KEY`: server-only service role/secret key. Never expose it with a `NEXT_PUBLIC_` prefix.
+- `SESSION_SECRET` and `ADMIN_USERS`: unique production values; do not copy credentials from an example file.
+
+Apply `supabase/migrations/20261028000000_initial.sql` in the Supabase SQL Editor. It creates the content
+table and a public-read `gallery` Storage bucket. The application uses Postgres for editable content,
+contact messages, and the donation ledger; gallery image bytes are stored in Supabase Storage. The service
+key is used only in server routes and server actions. Gallery uploads are capped at 4 MB to stay within
+Vercel's request-size limit.
+
+To migrate existing local admin data, first configure `DATABASE_URL`, `SUPABASE_URL`, and
+`SUPABASE_SERVICE_ROLE_KEY` in `.env.local`, then run:
+
+```bash
+npm run migrate:file-store
+```
+
+The script imports `.data/*.json` and uploads locally stored gallery images from `.data/uploads/`.
+By default, existing database rows are preserved. `npm run migrate:file-store -- --overwrite`
+replaces matching database content with the local files, so back up the database before using that option.
+Once migration completes, add the same environment variables to Vercel and redeploy. Without
+`DATABASE_URL`, local development continues to use `.data`; a Vercel deployment fails explicitly rather
+than silently writing data to ephemeral storage.
+
 **Online giving flow:** `/give` -> `POST /api/give/initialize` (amount in kobo, unique reference, pending
 ledger entry) -> Paystack checkout -> return page and webhook both call `confirmPayment()`
 (`src/lib/paystack.ts`), the only place a payment becomes "success". It requires Paystack to report
@@ -90,15 +120,13 @@ signature. Confirming twice is safe.
 
 **Admin:** roles are `editor` (events, sermons, locations, announcement, gallery, contact details) and `super` (also
 donations report + CSV, and contact messages). Editors can change or clear the announcement and upload or remove
-gallery images (JPEG, PNG, or WebP, up to 5 MB each). Every admin page and action re-checks the session,
+gallery images (JPEG, PNG, or WebP, up to 4 MB each). Every admin page and action re-checks the session,
 not only the middleware. Users are defined in `ADMIN_USERS`; adding or removing one means editing
-that env var and restarting.
+that env var and restarting locally or redeploying on Vercel.
 
-**Data storage (read this before deploying):** admin edits, uploaded gallery images, the donations ledger and contact
-messages live under `.data/` (`src/lib/store.ts`). That needs a persistent, writable
-disk (VPS or Docker volume). It will not persist on Vercel or other read-only hosts. For those,
-replace `readJson`/`updateJson` in `store.ts` with a managed database (Supabase/Neon, PRD §24);
-nothing else has to change. The files in `src/data/` are the starting content (the sample events,
+**Data storage:** local development uses `.data/` by default. Hosted deployments use Supabase Postgres
+and Supabase Storage; configure the environment and apply the migration described above before enabling
+admin editing or gallery uploads. The files in `src/data/` are starting content (the sample events,
 sermons and testimonies still have to be replaced before launch).
 
 **Email:** receipts and contact alerts use Resend if `RESEND_API_KEY` and `MAIL_FROM` are set;
@@ -107,7 +135,7 @@ otherwise they are logged and skipped (`src/lib/mail.ts`).
 **Still open**
 - Giving purposes: `givingPurposes` in `src/data/site.ts` holds one neutral default until DBIF confirms the list.
 - Testimonies are not admin-editable yet (needs a moderation flow, PRD Phase 2).
-- Rate limits are in-memory (single server process).
+- Rate limits are in-memory (per server instance).
 - No user-management screen or password reset (needs a database).
 - Analytics is not wired in (PRD §12: subject to privacy requirements).
 - Add a giving/donor data section to the privacy policy once DBIF approves giving.

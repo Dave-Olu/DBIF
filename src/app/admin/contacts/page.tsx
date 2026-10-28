@@ -10,7 +10,9 @@ export default async function ContactsAdmin({ searchParams }: { searchParams: { 
   const rows: [string, string, string | null][] = [
     ["phone", "Phone", contact.phone], ["whatsapp", "WhatsApp", contact.whatsapp], ["email", "Email", contact.email],
     ["address", "Address / headquarters", contact.address],
-    ["facebook", "Facebook link", social.facebook], ["instagram", "Instagram link", social.instagram],
+    ["facebookGroup", "Facebook group link", social.facebookGroup],
+    ["facebookPage", "Facebook page link", social.facebookPage],
+    ["instagram", "Instagram link", social.instagram],
     ["youtube", "YouTube link", social.youtube], ["tiktok", "TikTok link", social.tiktok], ["x", "X link", social.x],
   ];
   return (

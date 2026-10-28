@@ -6,9 +6,10 @@ import { promises as fs } from "fs";
 import path from "path";
 import { requireRole } from "@/lib/auth";
 import { collections, parseHttpsUrl, parseItem } from "@/lib/admin-schema";
-import { getGalleryImages, getSettings, listItems, removeGalleryImage, removeItem, saveAnnouncement, saveSettings, upsertGalleryImage, upsertItem, type CollectionName, type Settings } from "@/lib/content";
+import { getGalleryImages, listItems, removeGalleryImage, removeItem, saveAnnouncement, saveSettings, upsertGalleryImage, upsertItem, type CollectionName, type Settings } from "@/lib/content";
 import { getDataDirectory } from "@/lib/store";
 import type { GalleryImage } from "@/lib/types";
+import { assertGalleryStorageConfigured, deleteGalleryAsset } from "@/lib/gallery-storage";
 
 const isCollection = (c: string): c is CollectionName => c in collections;
 const refresh = () => revalidatePath("/", "layout");
@@ -40,16 +41,21 @@ const EMAIL_RE = /^[^\s@]+@[^\s@]+\.[^\s@]+$/;
 export async function saveSettingsAction(fd: FormData) {
   await requireRole("editor");
   const get = (k: string) => String(fd.get(k) ?? "").trim() || null;
-  const current = await getSettings();
   const next: Settings = {
     contact: { phone: get("phone"), whatsapp: get("whatsapp"), email: get("email"), address: get("address") },
-    social: { facebook: get("facebook"), instagram: get("instagram"), youtube: get("youtube"), tiktok: get("tiktok"), x: get("x") },
+    social: {
+      facebookGroup: get("facebookGroup"),
+      facebookPage: get("facebookPage"),
+      instagram: get("instagram"),
+      youtube: get("youtube"),
+      tiktok: get("tiktok"),
+      x: get("x"),
+    },
   };
   if (next.contact.email && !EMAIL_RE.test(next.contact.email)) redirect(`/admin/contacts?error=${encodeURIComponent("Email address is not valid.")}`);
   for (const [k, v] of Object.entries(next.social)) {
     if (v && !parseHttpsUrl(v)) redirect(`/admin/contacts?error=${encodeURIComponent(`${k} must be a full link starting with https://`)}`);
   }
-  void current;
   await saveSettings(next);
   refresh();
   redirect("/admin/contacts?saved=1");
@@ -71,10 +77,12 @@ export async function deleteGalleryImageAction(fd: FormData) {
   const id = String(fd.get("id") ?? "");
   const image = (await getGalleryImages()).find((entry) => entry.id === id);
   if (!image) redirect(`/admin/gallery?error=${encodeURIComponent("Image was not found.")}`);
+  assertGalleryStorageConfigured();
   await removeGalleryImage(id);
 
+  const removedRemoteAsset = await deleteGalleryAsset(image.src);
   const filename = image.src.startsWith("/api/gallery-images/") ? image.src.slice("/api/gallery-images/".length) : "";
-  if (filename && /^[0-9a-f-]+\.(png|jpg|webp)$/.test(filename)) {
+  if (!removedRemoteAsset && filename && /^[0-9a-f-]+\.(png|jpg|webp)$/.test(filename)) {
     try {
       await fs.unlink(path.join(getDataDirectory(), "uploads", filename));
     } catch (error) {

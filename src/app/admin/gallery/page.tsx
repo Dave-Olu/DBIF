@@ -16,7 +16,7 @@ export default async function GalleryAdmin({
   return (
     <>
       <h1 className="font-display text-3xl font-medium text-ink">Gallery</h1>
-      <p className="mt-2 text-ink/60">Upload images to add them to the public gallery. JPEG, PNG, or WebP; maximum 5 MB per image.</p>
+      <p className="mt-2 text-ink/60">Upload images to add them to the public gallery. JPEG, PNG, or WebP; maximum 4 MB per image.</p>
       {searchParams.saved && <p role="status" className="mt-4 border border-forest/30 bg-forest/5 px-4 py-2 text-sm text-forest">Image removed from the public gallery.</p>}
       {searchParams.uploaded && <p role="status" className="mt-4 border border-forest/30 bg-forest/5 px-4 py-2 text-sm text-forest">Image uploaded and published.</p>}
       {searchParams.updated && <p role="status" className="mt-4 border border-forest/30 bg-forest/5 px-4 py-2 text-sm text-forest">Image details updated.</p>}
@@ -47,7 +47,7 @@ export default async function GalleryAdmin({
       <ul className="mt-4 grid gap-4 sm:grid-cols-2 lg:grid-cols-3">
         {images.map((image) => (
           <li key={image.id} className="border border-ink/12 bg-paper p-4">
-            <Image src={image.src} alt={image.alt} width={400} height={300} className="aspect-[4/3] w-full object-cover" />
+            <Image src={image.src} alt={image.alt} width={400} height={300} unoptimized className="aspect-[4/3] w-full object-cover" />
             <form action={saveGalleryImageAction} className="mt-3 space-y-3">
               <input type="hidden" name="id" value={image.id} />
               <div>

@@ -39,11 +39,16 @@ export const site = {
   },
 
   social: {
-    facebook: "https://www.facebook.com/share/1Er5QbSUUP/",
+    facebookGroup: "https://www.facebook.com/share/g/1KLGVAoTT7/",
+    facebookPage: "https://www.facebook.com/SunriseSuccessStrategy",
     instagram: null as string | null,
     youtube: "https://youtube.com/@juliusa.awoniyi1958",
     tiktok: null as string | null,
     x: null as string | null,
+  },
+
+  mobileApp: {
+    androidDownload: "https://t.me/dbif5/4121",
   },
 
   // §22: preferred domain name — update once confirmed and set NEXT_PUBLIC_SITE_URL accordingly

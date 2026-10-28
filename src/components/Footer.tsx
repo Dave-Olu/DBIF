@@ -10,6 +10,8 @@ function SocialIcon({ name }: { name: string }) {
 
   switch (name) {
     case "facebook":
+    case "facebookGroup":
+    case "facebookPage":
       return (
         <svg viewBox="0 0 24 24" fill="none" className={commonClassName} aria-hidden="true">
           <path d="M14 8h2V4h-2.5C11.3 4 10 5.3 10 7.5V10H8v4h2v6h4v-6h2.5l.5-4H14V8.8c0-.4.3-.8.8-.8H16V8h-2Z" strokeWidth="1.5" strokeLinecap="round" strokeLinejoin="round" />
@@ -59,10 +61,15 @@ export async function Footer() {
   const socials = Object.entries({
     ...site.social,
     ...Object.fromEntries(
-      Object.entries(social).filter(([, url]) => url)
+      Object.entries(social).filter(([name, url]) => name !== "facebook" && url)
     ),
   }).filter((entry): entry is [string, string] => Boolean(entry[1]));
   const socialLinks = [...(contact.whatsapp ? ([["whatsapp", contact.whatsapp]] as [string, string][]) : []), ...socials];
+  const socialLabel = (name: string) => {
+    if (name === "facebookGroup") return "Facebook Group";
+    if (name === "facebookPage") return "Facebook Page";
+    return name;
+  };
 
   return (
     <footer className="grain-panel text-paper">
@@ -109,6 +116,22 @@ export async function Footer() {
                 {contact.phone ?? ""}
               </a>
             </li>
+            <li>
+              <a
+                href={site.mobileApp.androidDownload}
+                target="_blank"
+                rel="noopener noreferrer"
+                className="inline-flex min-h-14 items-center gap-3 rounded border border-gold-light/40 bg-paper/5 px-4 py-3 text-paper transition-colors hover:border-gold-light hover:bg-paper/10"
+              >
+                <svg viewBox="0 0 24 24" fill="none" className="h-5 w-5 shrink-0 text-gold-light" aria-hidden="true">
+                  <path d="M12 3v12m0 0 4-4m-4 4-4-4M5 16v4h14v-4" stroke="currentColor" strokeWidth="1.7" strokeLinecap="round" strokeLinejoin="round" />
+                </svg>
+                <span className="flex flex-col">
+                  <span className="text-sm font-medium">Get the DBIF mobile app</span>
+                  <span className="text-xs text-paper/60">Android · Download via Telegram</span>
+                </span>
+              </a>
+            </li>
             <li className="flex flex-wrap items-center gap-3 pt-1">
               {socialLinks.map(([name, url]) => (
                 <a
@@ -116,11 +139,11 @@ export async function Footer() {
                   href={url}
                   rel="noopener noreferrer"
                   target="_blank"
-                  aria-label={`Follow DBIF on ${name}`}
+                  aria-label={`Follow DBIF on ${socialLabel(name)}`}
                   className="flex items-center gap-2 rounded-full border border-paper/20 bg-paper/5 px-3 py-2 text-paper transition-colors hover:border-paper/40 hover:bg-paper/10"
                 >
                   <SocialIcon name={name} />
-                  <span className="text-xs capitalize">{name}</span>
+                  <span className="text-xs capitalize">{socialLabel(name)}</span>
                 </a>
               ))}
             </li>

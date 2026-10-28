@@ -5,12 +5,13 @@ import { NextResponse, type NextRequest } from "next/server";
 import { requireRole } from "@/lib/auth";
 import { upsertGalleryImage } from "@/lib/content";
 import { getDataDirectory } from "@/lib/store";
+import { uploadGalleryAsset, usesRemoteGalleryStorage } from "@/lib/gallery-storage";
 import type { GalleryImage } from "@/lib/types";
 
 export const runtime = "nodejs";
 
-const MAX_FILE_SIZE = 5 * 1024 * 1024;
-const MAX_REQUEST_SIZE = 6 * 1024 * 1024;
+const MAX_FILE_SIZE = 4 * 1024 * 1024;
+const MAX_REQUEST_SIZE = 4.25 * 1024 * 1024;
 const CATEGORIES = new Set<GalleryImage["category"]>(["worship", "outreach", "conference", "community"]);
 
 function imageExtension(bytes: Uint8Array): "jpg" | "png" | "webp" | null {
@@ -50,15 +51,22 @@ export async function POST(request: NextRequest) {
 
   const id = randomUUID();
   const filename = `${id}.${extension}`;
-  const uploadDirectory = path.join(getDataDirectory(), "uploads");
-  await fs.mkdir(uploadDirectory, { recursive: true });
-  await fs.writeFile(path.join(uploadDirectory, filename), bytes, { flag: "wx" });
+  const src = usesRemoteGalleryStorage()
+    ? await uploadGalleryAsset(filename, bytes, `image/${extension === "jpg" ? "jpeg" : extension}`)
+    : await saveLocalGalleryImage(filename, bytes);
   await upsertGalleryImage({
     id,
-    src: `/api/gallery-images/${filename}`,
+    src,
     alt,
     category: category as GalleryImage["category"],
   });
 
   return redirectTo(request, "uploaded=1");
+}
+
+async function saveLocalGalleryImage(filename: string, bytes: Uint8Array) {
+  const uploadDirectory = path.join(getDataDirectory(), "uploads");
+  await fs.mkdir(uploadDirectory, { recursive: true });
+  await fs.writeFile(path.join(uploadDirectory, filename), bytes, { flag: "wx" });
+  return `/api/gallery-images/${filename}`;
 }
