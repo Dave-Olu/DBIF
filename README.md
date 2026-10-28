@@ -75,7 +75,9 @@ Implements the flows in `DBIF_System_Flow_and_Features_v1.docx`.
 
 **Setup**
 
-1. `cp .env.example .env.local` and fill it in (`SESSION_SECRET`, `ADMIN_USERS`, Paystack key).
+1. Copy `.env.example` to `.env.local`. Generate a unique `SESSION_SECRET` for each environment with
+   `node -e "console.log(require('crypto').randomBytes(32).toString('hex'))"` and configure `ADMIN_USERS`
+   and the Paystack key. Never reuse the example or another environment's secret.
 2. `npm run dev`, then sign in at `/admin/login`.
 3. Paystack card giving stays off until `GIVING_ENABLED=true` (PRD: subject to leadership approval). The `/give` page also lists the approved bank-transfer accounts.
 4. In the Paystack dashboard set the webhook URL to `<site>/api/paystack/webhook`.
@@ -86,13 +88,14 @@ ledger entry) -> Paystack checkout -> return page and webhook both call `confirm
 success and the amount and currency to match. Webhooks are rejected without a valid HMAC-SHA512
 signature. Confirming twice is safe.
 
-**Admin:** roles are `editor` (events, sermons, locations, contact details) and `super` (also
-donations report + CSV, and contact messages). Every admin page and action re-checks the session,
+**Admin:** roles are `editor` (events, sermons, locations, announcement, gallery, contact details) and `super` (also
+donations report + CSV, and contact messages). Editors can change or clear the announcement and upload or remove
+gallery images (JPEG, PNG, or WebP, up to 5 MB each). Every admin page and action re-checks the session,
 not only the middleware. Users are defined in `ADMIN_USERS`; adding or removing one means editing
 that env var and restarting.
 
-**Data storage (read this before deploying):** admin edits, the donations ledger and contact
-messages live in JSON files under `.data/` (`src/lib/store.ts`). That needs a persistent, writable
+**Data storage (read this before deploying):** admin edits, uploaded gallery images, the donations ledger and contact
+messages live under `.data/` (`src/lib/store.ts`). That needs a persistent, writable
 disk (VPS or Docker volume). It will not persist on Vercel or other read-only hosts. For those,
 replace `readJson`/`updateJson` in `store.ts` with a managed database (Supabase/Neon, PRD §24);
 nothing else has to change. The files in `src/data/` are the starting content (the sample events,
@@ -103,7 +106,7 @@ otherwise they are logged and skipped (`src/lib/mail.ts`).
 
 **Still open**
 - Giving purposes: `givingPurposes` in `src/data/site.ts` holds one neutral default until DBIF confirms the list.
-- Gallery and testimonies are not admin-editable yet (needs an image host / moderation flow, PRD Phase 2).
+- Testimonies are not admin-editable yet (needs a moderation flow, PRD Phase 2).
 - Rate limits are in-memory (single server process).
 - No user-management screen or password reset (needs a database).
 - Analytics is not wired in (PRD §12: subject to privacy requirements).

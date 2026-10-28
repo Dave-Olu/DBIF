@@ -2,9 +2,13 @@
 
 import { redirect } from "next/navigation";
 import { revalidatePath } from "next/cache";
+import { promises as fs } from "fs";
+import path from "path";
 import { requireRole } from "@/lib/auth";
 import { collections, parseHttpsUrl, parseItem } from "@/lib/admin-schema";
-import { getSettings, listItems, removeItem, saveSettings, upsertItem, type CollectionName, type Settings } from "@/lib/content";
+import { getGalleryImages, getSettings, listItems, removeGalleryImage, removeItem, saveAnnouncement, saveSettings, upsertGalleryImage, upsertItem, type CollectionName, type Settings } from "@/lib/content";
+import { getDataDirectory } from "@/lib/store";
+import type { GalleryImage } from "@/lib/types";
 
 const isCollection = (c: string): c is CollectionName => c in collections;
 const refresh = () => revalidatePath("/", "layout");
@@ -49,4 +53,58 @@ export async function saveSettingsAction(fd: FormData) {
   await saveSettings(next);
   refresh();
   redirect("/admin/contacts?saved=1");
+}
+
+export async function saveAnnouncementAction(fd: FormData) {
+  await requireRole("editor");
+  const announcement = String(fd.get("announcement") ?? "").trim();
+  if (announcement.length > 300) {
+    redirect(`/admin/announcement?error=${encodeURIComponent("Announcement must be 300 characters or fewer.")}`);
+  }
+  await saveAnnouncement(announcement);
+  refresh();
+  redirect("/admin/announcement?saved=1");
+}
+
+export async function deleteGalleryImageAction(fd: FormData) {
+  await requireRole("editor");
+  const id = String(fd.get("id") ?? "");
+  const image = (await getGalleryImages()).find((entry) => entry.id === id);
+  if (!image) redirect(`/admin/gallery?error=${encodeURIComponent("Image was not found.")}`);
+  await removeGalleryImage(id);
+
+  const filename = image.src.startsWith("/api/gallery-images/") ? image.src.slice("/api/gallery-images/".length) : "";
+  if (filename && /^[0-9a-f-]+\.(png|jpg|webp)$/.test(filename)) {
+    try {
+      await fs.unlink(path.join(getDataDirectory(), "uploads", filename));
+    } catch (error) {
+      if ((error as NodeJS.ErrnoException).code !== "ENOENT") throw error;
+    }
+  }
+  revalidatePath("/gallery");
+  redirect("/admin/gallery?saved=1");
+}
+
+const GALLERY_CATEGORIES = ["worship", "outreach", "conference", "community"] as const;
+const isGalleryCategory = (category: string): category is GalleryImage["category"] =>
+  GALLERY_CATEGORIES.some((value) => value === category);
+
+export async function saveGalleryImageAction(fd: FormData) {
+  await requireRole("editor");
+  const id = String(fd.get("id") ?? "");
+  const alt = String(fd.get("alt") ?? "").trim();
+  const category = String(fd.get("category") ?? "");
+  const image = (await getGalleryImages()).find((entry) => entry.id === id);
+
+  if (!image) redirect(`/admin/gallery?error=${encodeURIComponent("Image was not found.")}`);
+  if (!alt || alt.length > 150) {
+    redirect(`/admin/gallery?error=${encodeURIComponent("Enter a caption of 150 characters or fewer.")}`);
+  }
+  if (!isGalleryCategory(category)) {
+    redirect(`/admin/gallery?error=${encodeURIComponent("Choose a valid image category.")}`);
+  }
+
+  await upsertGalleryImage({ ...image, alt, category });
+  revalidatePath("/gallery");
+  redirect("/admin/gallery?updated=1");
 }

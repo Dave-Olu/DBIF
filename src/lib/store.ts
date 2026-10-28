@@ -14,6 +14,8 @@ import path from "path";
 const DIR = process.env.DATA_DIR || path.join(process.cwd(), ".data");
 const chains = new Map<string, Promise<unknown>>();
 
+export const getDataDirectory = () => DIR;
+
 async function readRaw<T>(name: string): Promise<T | undefined> {
   try {
     return JSON.parse(await fs.readFile(path.join(DIR, `${name}.json`), "utf8")) as T;
@@ -25,6 +27,24 @@ async function readRaw<T>(name: string): Promise<T | undefined> {
 
 export async function readJson<T>(name: string, seed: () => T): Promise<T> {
   return (await readRaw<T>(name)) ?? seed();
+}
+
+export async function readString(name: string, seed: () => string): Promise<string> {
+  let contents: string;
+  try {
+    contents = await fs.readFile(path.join(DIR, `${name}.json`), "utf8");
+  } catch (error) {
+    if ((error as NodeJS.ErrnoException).code === "ENOENT") return seed();
+    throw error;
+  }
+
+  try {
+    const parsed: unknown = JSON.parse(contents);
+    return typeof parsed === "string" ? parsed : contents;
+  } catch (error) {
+    if (error instanceof SyntaxError) return contents;
+    throw error;
+  }
 }
 
 /** Read-modify-write, serialised per file so concurrent requests don't clobber each other. */

@@ -1,10 +1,11 @@
-import { readJson, updateJson } from "@/lib/store";
+import { readJson, readString, updateJson } from "@/lib/store";
 import { events as seedEvents } from "@/data/events";
 import { sermons as seedSermons } from "@/data/sermons";
 import { allLocations as seedLocations } from "@/data/locations";
 import { site } from "@/data/site";
 import { todayInLagos } from "@/lib/utils";
-import type { EventItem, Location, Sermon } from "@/lib/types";
+import { galleryImages as seedGalleryImages } from "@/data/gallery";
+import type { EventItem, GalleryImage, Location, Sermon } from "@/lib/types";
 
 export type CollectionName = "events" | "sermons" | "locations";
 export type Item = { slug: string } & Record<string, unknown>;
@@ -81,3 +82,23 @@ const seedSettings = (): Settings => ({
 
 export const getSettings = (): Promise<Settings> => readJson("settings", seedSettings);
 export const saveSettings = (s: Settings) => updateJson<Settings>("settings", seedSettings, () => s);
+
+export const getAnnouncement = (): Promise<string> => readString("announcement", () => site.announcement);
+export const saveAnnouncement = (announcement: string) =>
+  updateJson<string>("announcement", () => site.announcement, () => announcement);
+
+const seedGallery = (): GalleryImage[] => structuredClone(seedGalleryImages);
+export const getGalleryImages = (): Promise<GalleryImage[]> => readJson("gallery", seedGallery);
+
+export async function upsertGalleryImage(image: GalleryImage) {
+  await updateJson<GalleryImage[]>("gallery", seedGallery, (list) => {
+    const index = list.findIndex((entry) => entry.id === image.id);
+    if (index >= 0) list[index] = image;
+    else list.push(image);
+    return list;
+  });
+}
+
+export async function removeGalleryImage(id: string) {
+  await updateJson<GalleryImage[]>("gallery", seedGallery, (list) => list.filter((image) => image.id !== id));
+}

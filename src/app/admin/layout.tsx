@@ -10,7 +10,7 @@ export default async function AdminLayout({ children }: { children: React.ReactN
   return (
     <>
       {session && <AdminNav session={session} />}
-      <div className="mx-auto max-w-6xl px-6 py-10 sm:px-8">{children}</div>
+      <div className="mx-auto min-h-[50vh] max-w-7xl px-4 py-8 sm:px-6 sm:py-10 lg:px-8">{children}</div>
     </>
   );
 }

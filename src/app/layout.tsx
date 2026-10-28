@@ -5,8 +5,10 @@ import { Header } from "@/components/Header";
 import { Footer } from "@/components/Footer";
 import { AnnouncementBar } from "@/components/AnnouncementBar";
 import { FloatingActions } from "@/components/FloatingActions";
+import { PublicSiteShell } from "@/components/PublicSiteShell";
 import { PageTransition } from "@/components/PageTransition";
 import { site } from "@/data/site";
+import { getAnnouncement } from "@/lib/content";
 import logoUrl from "@/app/gallery/Logo.png";
 
 const fraunces = Fraunces({
@@ -45,11 +47,14 @@ export const metadata: Metadata = {
   },
 };
 
-export default function RootLayout({
+export const dynamic = "force-dynamic";
+
+export default async function RootLayout({
   children,
 }: {
   children: React.ReactNode;
 }) {
+  const announcement = await getAnnouncement();
   return (
     <html lang="en" className={`${fraunces.variable} ${workSans.variable}`}>
       <body className="font-body antialiased">
@@ -59,13 +64,16 @@ export default function RootLayout({
         >
           Skip to content
         </a>
-        <AnnouncementBar message={site.announcement} />
-        <Header showGive />
-        <main id="main-content">
-          <PageTransition>{children}</PageTransition>
-        </main>
-        <Footer />
-        <FloatingActions whatsappUrl={site.contact.whatsapp} />
+        <PublicSiteShell
+          announcementBar={<AnnouncementBar message={announcement} />}
+          header={<Header showGive />}
+          footer={<Footer />}
+          floatingActions={<FloatingActions whatsappUrl={site.contact.whatsapp} />}
+        >
+          <main id="main-content">
+            <PageTransition>{children}</PageTransition>
+          </main>
+        </PublicSiteShell>
       </body>
     </html>
   );
