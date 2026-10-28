@@ -90,9 +90,19 @@ const seedSettings = (): Settings => ({
 export const getSettings = (): Promise<Settings> => readJson("settings", seedSettings);
 export const saveSettings = (s: Settings) => updateJson<Settings>("settings", seedSettings, () => s);
 
-export const getAnnouncement = (): Promise<string> => readString("announcement", () => site.announcement);
+function normalizeAnnouncement(announcement: string): string {
+  const trimmed = announcement.trim();
+  const quotePairs = [["\"", "\""], ["'", "'"], ["“", "”"], ["‘", "’"]] as const;
+  const pair = quotePairs.find(([opening, closing]) => trimmed.startsWith(opening) && trimmed.endsWith(closing));
+  return pair ? trimmed.slice(pair[0].length, -pair[1].length).trim() : trimmed;
+}
+
+export async function getAnnouncement(): Promise<string> {
+  return normalizeAnnouncement(await readString("announcement", () => site.announcement));
+}
+
 export const saveAnnouncement = (announcement: string) =>
-  updateJson<string>("announcement", () => site.announcement, () => announcement);
+  updateJson<string>("announcement", () => site.announcement, () => normalizeAnnouncement(announcement));
 
 const seedGallery = (): GalleryImage[] => structuredClone(seedGalleryImages);
 export const getGalleryImages = (): Promise<GalleryImage[]> => readJson("gallery", seedGallery);
