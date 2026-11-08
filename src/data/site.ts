@@ -8,7 +8,7 @@
  */
 const normalizedSiteUrl = (() => {
   const value = process.env.NEXT_PUBLIC_SITE_URL?.trim();
-  return value && /^https?:\/\//i.test(value) ? value : "https://www.dbif.example";
+  return value && /^https?:\/\//i.test(value) ? value : "https://dbifglobal.org";
 })();
 
 export const site = {
@@ -51,7 +51,7 @@ export const site = {
     androidDownload: "https://t.me/dbif5/4121",
   },
 
-  // §22: preferred domain name — update once confirmed and set NEXT_PUBLIC_SITE_URL accordingly
+  // Set NEXT_PUBLIC_SITE_URL to the preferred canonical domain when overriding this default.
   url: normalizedSiteUrl,
 };
 
