@@ -5,7 +5,8 @@ import { Container } from "@/components/Container";
 import { PageHeader } from "@/components/PageHeader";
 import { Button } from "@/components/Button";
 import { getEvent, getEvents } from "@/lib/content";
-import { formatDate } from "@/lib/utils";
+import { formatDateRange } from "@/lib/utils";
+import { ImageWithFallback } from "@/components/ImageWithFallback";
 
 export async function generateStaticParams() {
   return (await getEvents()).map((event) => ({ slug: event.slug }));
@@ -23,8 +24,19 @@ export default async function EventDetailPage({ params }: { params: { slug: stri
 
   return (
     <>
-      <PageHeader title={event.title} intro={`${formatDate(event.date)} · ${event.time} · ${event.venue}`} />
+      <PageHeader title={event.title} intro={`${formatDateRange(event.date, event.endDate)} · ${event.time} · ${event.venue}`} />
       <Container narrow className="py-16 sm:py-20">
+        {event.posterUrl && (
+          <div className="relative mx-auto mb-10 aspect-[3/4] w-full max-w-xl overflow-hidden bg-paper-dim">
+            <ImageWithFallback
+              src={event.posterUrl}
+              alt={`Poster for ${event.title}`}
+              fill
+              sizes="(max-width: 640px) 100vw, 576px"
+              className="object-contain"
+            />
+          </div>
+        )}
         <p className="text-lg leading-relaxed text-ink/80">{event.description}</p>
 
         {event.speakers.length > 0 && (

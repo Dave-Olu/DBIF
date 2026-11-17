@@ -6,7 +6,7 @@ import { EventCard } from "@/components/EventCard";
 import { SermonListItem } from "@/components/SermonListItem";
 import { TestimonyCard } from "@/components/TestimonyCard";
 import { Button } from "@/components/Button";
-import { upcomingEvents } from "@/data/events";
+import { getUpcomingEvents } from "@/lib/content";
 import { sermons } from "@/data/sermons";
 import { testimonies } from "@/data/testimonies";
 import { physicalLocations } from "@/data/locations";
@@ -117,8 +117,10 @@ const faqs = [
   },
 ];
 
-export default function HomePage() {
-  const featuredEvents = upcomingEvents.slice(0, 2);
+export const dynamic = "force-dynamic";
+
+export default async function HomePage() {
+  const featuredEvents = (await getUpcomingEvents()).slice(0, 2);
   const featuredSermon = sermons[0];
   const featuredTestimony = testimonies[0];
 

@@ -1,4 +1,5 @@
 import type { EventItem } from "@/lib/types";
+import { todayInLagos } from "@/lib/utils";
 
 /**
  * Sample/illustrative events only — demonstrates the Events page structure
@@ -20,31 +21,33 @@ export const events: EventItem[] = [
     status: "upcoming",
   },
   {
-    slug: "marriage-and-relationships-seminar",
-    title: "Marriage & Relationships Seminar",
-    date: "2026-12-05",
-    time: "4:00 PM",
-    venue: "Ibadan Branch",
+    slug: "singles-summit",
+    title: "Quarterly & National Special Singles' Summit",
+    date: "2026-11-20",
+    endDate: "2026-11-21",
+    time: "3:00 PM Friday - 3:00 PM Saturday",
+    venue: "Victory Kiddies Academy, Timilehin B/S, Off Jeje Filling Station, Alakia, Ibadan, Oyo State",
     description:
-      "A practical session for couples and singles on communication, conflict, and preparing for marriage well.",
+      "Theme: I Will Marry in 2027 & Not Be Denied. Features include knowing who to marry, attracting who to marry, going beyond matchmaking, learning the courtship syllabus, preparing for wedding, matrimony and squatterhood, handling the early years of marriage, and breaking binding bondages. Convenor: Julius A. Awoniyi. Call +2348035553669 or +2348027844990, or message t.me/dbif5.",
     speakers: [],
     registrationUrl: null,
-    featured: false,
-    status: "upcoming",
-  },
-  {
-    slug: "year-end-crossover-vigil",
-    title: "Year-End Crossover Vigil",
-    date: "2026-12-31",
-    time: "10:00 PM",
-    venue: "Lagos Main Auditorium (livestreamed)",
-    description:
-      "A night of prayer and worship into the new year, open to all DBIF locations and the online community.",
-    speakers: [],
-    registrationUrl: null,
+    posterUrl: "/events/singles-summit-2026.png",
     featured: true,
     status: "upcoming",
   },
+  // {
+  //   slug: "year-end-crossover-vigil",
+  //   title: "Year-End Crossover Vigil",
+  //   date: "2026-12-31",
+  //   time: "10:00 PM",
+  //   venue: "Lagos Main Auditorium (livestreamed)",
+  //   description:
+  //     "A night of prayer and worship into the new year, open to all DBIF locations and the online community.",
+  //   speakers: [],
+  //   registrationUrl: null,
+  //   featured: true,
+  //   status: "upcoming",
+  // },
   {
     slug: "singles-fellowship-retreat",
     title: "Singles Fellowship Retreat",
@@ -60,6 +63,7 @@ export const events: EventItem[] = [
   },
 ];
 
-export const upcomingEvents = events.filter((e) => e.status === "upcoming");
-export const pastEvents = events.filter((e) => e.status === "past");
+const today = todayInLagos();
+export const upcomingEvents = events.filter((e) => (e.endDate ?? e.date) >= today);
+export const pastEvents = events.filter((e) => (e.endDate ?? e.date) < today);
 export const featuredEvent = upcomingEvents.find((e) => e.featured) ?? upcomingEvents[0];

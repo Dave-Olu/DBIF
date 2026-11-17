@@ -1,6 +1,7 @@
 import Link from "next/link";
 import type { EventItem } from "@/lib/types";
-import { formatDateShort } from "@/lib/utils";
+import { formatDateRange, formatDateShort } from "@/lib/utils";
+import { ImageWithFallback } from "@/components/ImageWithFallback";
 
 export function EventCard({ event }: { event: EventItem }) {
   const { day, month } = formatDateShort(event.date);
@@ -14,11 +15,23 @@ export function EventCard({ event }: { event: EventItem }) {
         <span className="font-display text-2xl font-medium leading-none">{day}</span>
         <span className="mt-1 text-xs tracking-wide">{month}</span>
       </div>
+      {event.posterUrl && (
+        <div className="relative hidden w-28 flex-none sm:block">
+          <ImageWithFallback
+            src={event.posterUrl}
+            alt={`Poster for ${event.title}`}
+            fill
+            sizes="112px"
+            className="object-cover"
+          />
+        </div>
+      )}
       <div className="flex-1 border-l border-dashed border-ink/20 px-5 py-4">
         <h3 className="font-display text-lg font-medium text-ink group-hover:underline">
           {event.title}
         </h3>
         <p className="mt-1 text-sm text-ink/60">
+          {event.endDate && event.endDate !== event.date ? `${formatDateRange(event.date, event.endDate)} · ` : ""}
           {event.time} · {event.venue}
         </p>
         <p className="mt-2 text-sm leading-relaxed text-ink/70">{event.description}</p>

@@ -30,6 +30,11 @@ export default async function CollectionPage({
   return (
     <>
       <h1 className="font-display text-3xl font-medium text-ink">{def.label}</h1>
+      {name === "events" && (
+        <p className="mt-2 text-sm text-ink/60">
+          Add events here at any time. Set an end date for multi-day events; they move to Past automatically after that date.
+        </p>
+      )}
       {searchParams.saved && <p role="status" className="mt-4 border border-forest/30 bg-forest/5 px-4 py-2 text-sm text-forest">Saved. The public site is updated.</p>}
       {searchParams.error && <p role="alert" className="mt-4 border border-red-300 bg-red-50 px-4 py-2 text-sm text-red-800">{searchParams.error}</p>}
 

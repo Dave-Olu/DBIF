@@ -5,6 +5,10 @@ export function formatDate(iso: string): string {
   return date.toLocaleDateString("en-GB", { day: "numeric", month: "long", year: "numeric", ...OPTS });
 }
 
+export function formatDateRange(start: string, end?: string | null): string {
+  return end && end !== start ? `${formatDate(start)} - ${formatDate(end)}` : formatDate(start);
+}
+
 export function formatDateShort(iso: string): { day: string; month: string } {
   const date = new Date(`${iso}T00:00:00Z`);
   return {

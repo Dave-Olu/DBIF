@@ -1,6 +1,6 @@
 import type { CollectionName, Item } from "@/lib/content";
 
-export type FieldType = "text" | "textarea" | "date" | "url" | "mapurl" | "list" | "checkbox";
+export type FieldType = "text" | "textarea" | "date" | "url" | "image" | "mapurl" | "list" | "checkbox";
 export interface FieldDef {
   name: string;
   label: string;
@@ -25,11 +25,13 @@ export const collections: Record<CollectionName, CollectionDef> = {
     fields: [
       { name: "title", label: "Title", type: "text", required: true },
       { name: "date", label: "Date", type: "date", required: true },
+      { name: "endDate", label: "End date", type: "date", hint: "Optional. Set for multi-day events; it moves to Past the day after this date." },
       { name: "time", label: "Time", type: "text", required: true, hint: "e.g. 9:00 AM" },
       { name: "venue", label: "Venue", type: "text", required: true },
       { name: "description", label: "Description", type: "textarea", required: true },
       { name: "speakers", label: "Speakers", type: "list", hint: "Separate names with commas" },
       { name: "registrationUrl", label: "Registration link", type: "url", hint: "Optional. Must start with https://" },
+      { name: "posterUrl", label: "Event image", type: "image", hint: "Optional. Use an https:// image URL or a site path such as /events/poster.png." },
       { name: "featured", label: "Feature on the home page", type: "checkbox" },
     ],
   },
@@ -64,7 +66,7 @@ export const collections: Record<CollectionName, CollectionDef> = {
   },
 };
 
-const MAX = { text: 200, textarea: 3000, url: 500 } as const;
+const MAX = { text: 200, textarea: 3000, url: 500, image: 500 } as const;
 
 export function slugify(s: string): string {
   return s.toLowerCase().normalize("NFKD").replace(/[^a-z0-9]+/g, "-").replace(/^-+|-+$/g, "").slice(0, 60) || "item";
@@ -86,6 +88,21 @@ function parseMapUrl(v: string): string | null {
   return hostname === "www.google.com" && pathname.startsWith("/maps/embed") ? u : null;
 }
 
+function parseImageUrl(v: string): string | null {
+  const httpsUrl = parseHttpsUrl(v);
+  if (httpsUrl) return httpsUrl;
+  if (v.startsWith("/") && !v.startsWith("//") && !v.includes("\\") && !v.split(/[/?#]/).includes("..")) {
+    return v;
+  }
+  return null;
+}
+
+function isValidDate(value: string): boolean {
+  if (!/^\d{4}-\d{2}-\d{2}$/.test(value)) return false;
+  const date = new Date(`${value}T00:00:00Z`);
+  return !Number.isNaN(date.getTime()) && date.toISOString().slice(0, 10) === value;
+}
+
 export type ParseResult = { ok: true; item: Item } | { ok: false; error: string };
 
 export function parseItem(def: CollectionDef, fd: FormData, existingSlugs: string[], editingSlug: string | null): ParseResult {
@@ -99,15 +116,20 @@ export function parseItem(def: CollectionDef, fd: FormData, existingSlugs: strin
       out[f.name] = null;
       continue;
     }
-    const max = f.type === "textarea" ? MAX.textarea : f.type === "url" || f.type === "mapurl" ? MAX.url : MAX.text;
+    const max = f.type === "textarea" ? MAX.textarea : f.type === "url" || f.type === "image" || f.type === "mapurl" ? MAX.url : MAX.text;
     if (raw.length > max) return { ok: false, error: `${f.label} is too long.` };
     if (f.type === "date") {
-      if (!/^\d{4}-\d{2}-\d{2}$/.test(raw) || Number.isNaN(Date.parse(`${raw}T00:00:00Z`))) return { ok: false, error: `${f.label} is not a valid date.` };
+      if (!isValidDate(raw)) return { ok: false, error: `${f.label} is not a valid date.` };
     }
     if (f.type === "url") {
       const u = parseHttpsUrl(raw);
       if (!u) return { ok: false, error: `${f.label} must be a full link starting with https://` };
       out[f.name] = u; continue;
+    }
+    if (f.type === "image") {
+      const imageUrl = parseImageUrl(raw);
+      if (!imageUrl) return { ok: false, error: `${f.label} must be an https:// image URL or a site path starting with /.` };
+      out[f.name] = imageUrl; continue;
     }
     if (f.type === "mapurl") {
       const u = parseMapUrl(raw);
@@ -115,6 +137,9 @@ export function parseItem(def: CollectionDef, fd: FormData, existingSlugs: strin
       out[f.name] = u; continue;
     }
     out[f.name] = raw;
+  }
+  if (typeof out.endDate === "string" && out.endDate < String(out.date)) {
+    return { ok: false, error: "End date cannot be before the start date." };
   }
   let slug = editingSlug;
   if (!slug) {

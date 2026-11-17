@@ -30,11 +30,13 @@ export interface EventItem {
   slug: string;
   title: string;
   date: string; // ISO date, e.g. "2026-11-14"
+  endDate?: string | null;
   time: string;
   venue: string;
   description: string;
   speakers: string[];
   registrationUrl: string | null;
+  posterUrl?: string | null;
   featured: boolean;
   status: "upcoming" | "past";
 }

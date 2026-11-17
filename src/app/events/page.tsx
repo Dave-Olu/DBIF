@@ -2,8 +2,9 @@ import type { Metadata } from "next";
 import { PageHeader } from "@/components/PageHeader";
 import { Container } from "@/components/Container";
 import { EventCard } from "@/components/EventCard";
-import { PreviewNotice } from "@/components/PreviewNotice";
 import { getUpcomingEvents, getPastEvents } from "@/lib/content";
+
+export const dynamic = "force-dynamic";
 
 export const metadata: Metadata = {
   title: "Events",
@@ -16,7 +17,6 @@ export default async function EventsPage() {
     <>
       <PageHeader title="Events" intro="Programs, conferences, and vigils across DBIF's locations." />
       <Container className="py-16 sm:py-20">
-        <PreviewNotice />
         <h2 className="font-display text-2xl font-medium text-ink">Upcoming</h2>
         <div className="mt-6 grid gap-4 sm:grid-cols-2">
           {upcomingEvents.map((event) => (

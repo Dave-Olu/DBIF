@@ -36,7 +36,10 @@ export async function removeItem(c: CollectionName, slug: string) {
 export async function getEvents(): Promise<EventItem[]> {
   const today = todayInLagos();
   const list = (await listItems("events")) as unknown as EventItem[];
-  return list.map((e) => ({ ...e, status: e.date >= today ? "upcoming" : "past" }) as EventItem);
+  return list.map((e) => ({
+    ...e,
+    status: (e.endDate ?? e.date) >= today ? "upcoming" : "past",
+  }));
 }
 export async function getUpcomingEvents() {
   return (await getEvents()).filter((e) => e.status === "upcoming").sort((a, b) => a.date.localeCompare(b.date));
