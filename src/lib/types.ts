@@ -37,6 +37,8 @@ export interface EventItem {
   speakers: string[];
   registrationUrl: string | null;
   posterUrl?: string | null;
+  facebookUrl?: string | null;
+  telegramUrl?: string | null;
   featured: boolean;
   status: "upcoming" | "past";
 }
@@ -51,7 +53,7 @@ export interface Program {
 export interface Sermon {
   slug: string;
   title: string;
-  speaker: string;
+  speaker: string | null;
   date: string | null;
   category: string;
   scripture: string | null;

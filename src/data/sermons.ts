@@ -1,15 +1,10 @@
 import type { Sermon } from "@/lib/types";
 
-/**
- * Sample/illustrative resources only — demonstrates the Sermons & Resources
- * page structure (PRD §9.5). Replace with real speaker names, dates, and
- * media links once DBIF supplies them (PRD §15).
- */
 export const sermons: Sermon[] = [
   {
     slug: "your-marriage-must-be-fine",
     title: "Your Marriage Must Be Fine",
-    speaker: "To be confirmed",
+    speaker: null,
     date: null,
     category: "Marriage",
     scripture: null,
@@ -20,7 +15,7 @@ export const sermons: Sermon[] = [
   {
     slug: "money-before-marriage",
     title: "Money Before Marriage",
-    speaker: "To be confirmed",
+    speaker: null,
     date: null,
     category: "Marriage",
     scripture: null,
@@ -31,7 +26,7 @@ export const sermons: Sermon[] = [
   {
     slug: "praying-unpraying-and-repraying",
     title: "Praying, Unpraying and Repraying",
-    speaker: "To be confirmed",
+    speaker: null,
     date: null,
     category: "Prayer",
     scripture: null,
@@ -42,7 +37,7 @@ export const sermons: Sermon[] = [
   {
     slug: "a-marriage-that-reflects-grace",
     title: "A Marriage That Reflects Grace",
-    speaker: "To be confirmed",
+    speaker: null,
     date: "2026-09-06",
     category: "Marriage",
     scripture: "Ephesians 5:25–33",
@@ -54,7 +49,7 @@ export const sermons: Sermon[] = [
   {
     slug: "the-power-of-partnership",
     title: "The Power of Partnership",
-    speaker: "To be confirmed",
+    speaker: null,
     date: "2026-08-23",
     category: "Marriage",
     scripture: "Genesis 2:18",
@@ -64,33 +59,42 @@ export const sermons: Sermon[] = [
     videoUrl: null,
   },
   {
-    slug: "stewardship-before-increase",
-    title: "Stewardship Before Increase",
-    speaker: "To be confirmed",
-    date: "2026-08-02",
+    slug: "believers-in-the-marketplace",
+    title: "Believers in the Marketplace",
+    speaker: null,
+    date: null,
     category: "Finance/Business",
-    scripture: "Luke 16:10",
-    description:
-      "Why how you manage what you have now shapes what you're trusted with next in business, money, and ministry.",
+    scripture: null,
+    description: "A teaching for believers in the marketplace.",
     audioUrl: null,
-    videoUrl: null,
+    videoUrl: "https://t.me/dbif5/4306",
   },
   {
-    slug: "from-skill-to-scale",
-    title: "From Skill to Scale",
-    speaker: "To be confirmed",
-    date: "2026-07-19",
+    slug: "opportunities-rediscovered",
+    title: "Opportunities Rediscovered",
+    speaker: null,
+    date: null,
     category: "Finance/Business",
-    scripture: "Proverbs 22:29",
-    description:
-      "Building a strong work ethic, wise decisions, and a kingdom mindset that turns talent into sustainable impact.",
+    scripture: null,
+    description: "A teaching on rediscovering opportunities.",
     audioUrl: null,
-    videoUrl: null,
+    videoUrl: "https://t.me/dbif5/4285",
+  },
+  {
+    slug: "i-will-bless-your-business",
+    title: "I Will Bless Your Business",
+    speaker: null,
+    date: null,
+    category: "Finance/Business",
+    scripture: null,
+    description: "A teaching on blessing your business.",
+    audioUrl: null,
+    videoUrl: "https://t.me/dbif5/4221",
   },
   {
     slug: "leading-with-a-servants-heart",
     title: "Leading With a Servant's Heart",
-    speaker: "To be confirmed",
+    speaker: null,
     date: "2026-09-12",
     category: "Leadership",
     scripture: "Mark 10:42–45",
@@ -102,7 +106,7 @@ export const sermons: Sermon[] = [
   {
     slug: "discipline-that-builds-leadership",
     title: "Discipline That Builds Leadership",
-    speaker: "To be confirmed",
+    speaker: null,
     date: "2026-07-05",
     category: "Leadership",
     scripture: "1 Timothy 4:7–8",
@@ -112,28 +116,26 @@ export const sermons: Sermon[] = [
     videoUrl: null,
   },
   {
-    slug: "breaking-chains-through-the-blood",
-    title: "Breaking Chains Through the Blood",
-    speaker: "To be confirmed",
-    date: "2026-06-21",
+    slug: "candidate-of-deep-deliverance",
+    title: "Candidate of Deep Deliverance",
+    speaker: null,
+    date: null,
     category: "Deliverance",
-    scripture: "Romans 8:1–2",
-    description:
-      "A powerful message on freedom, spiritual warfare, and the authority believers carry in Christ.",
+    scripture: null,
+    description: "Candidate of deep deliverance.",
     audioUrl: null,
-    videoUrl: null,
+    videoUrl: "https://t.me/dbif5/3941",
   },
   {
-    slug: "guarding-your-heart-against-strongholds",
-    title: "Guarding Your Heart Against Strongholds",
-    speaker: "To be confirmed",
-    date: "2026-05-30",
+    slug: "candidate-of-deep-deliverance-2",
+    title: "Candidate of Deep Deliverance 2",
+    speaker: null,
+    date: null,
     category: "Deliverance",
-    scripture: "2 Corinthians 10:3–5",
-    description:
-      "How to identify destructive patterns, break spiritual strongholds, and live in renewed mental and emotional freedom.",
+    scripture: null,
+    description: "Candidate of deep deliverance, part 2.",
     audioUrl: null,
-    videoUrl: null,
+    videoUrl: "https://t.me/dbif5/3943",
   },
 ];
 

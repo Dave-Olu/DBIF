@@ -32,6 +32,8 @@ export const collections: Record<CollectionName, CollectionDef> = {
       { name: "speakers", label: "Speakers", type: "list", hint: "Separate names with commas" },
       { name: "registrationUrl", label: "Registration link", type: "url", hint: "Optional. Must start with https://" },
       { name: "posterUrl", label: "Event image", type: "image", hint: "Optional. Use an https:// image URL or a site path such as /events/poster.png." },
+      { name: "facebookUrl", label: "Facebook event / livestream link", type: "url", hint: "Optional. Must start with https://" },
+      { name: "telegramUrl", label: "Telegram event link", type: "url", hint: "Optional. Must start with https://" },
       { name: "featured", label: "Feature on the home page", type: "checkbox" },
     ],
   },
@@ -41,7 +43,7 @@ export const collections: Record<CollectionName, CollectionDef> = {
     titleField: "title",
     fields: [
       { name: "title", label: "Title", type: "text", required: true },
-      { name: "speaker", label: "Speaker", type: "text", required: true },
+      { name: "speaker", label: "Speaker", type: "text" },
       { name: "date", label: "Date", type: "date" },
       { name: "category", label: "Category", type: "text", required: true, hint: "e.g. Marriage, Finance/Business, Leadership, Deliverance, Prayer" },
       { name: "scripture", label: "Scripture reference", type: "text" },

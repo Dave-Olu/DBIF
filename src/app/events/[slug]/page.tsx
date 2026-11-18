@@ -47,11 +47,31 @@ export default async function EventDetailPage({ params }: { params: { slug: stri
         )}
 
         <div className="mt-10 flex flex-wrap gap-3">
-          {event.registrationUrl ? (
-            <Button href={event.registrationUrl}>Register</Button>
-          ) : (
-            <Button href="/contact">Ask about this event</Button>
+          {event.facebookUrl && (
+            <a
+              href={event.facebookUrl}
+              target="_blank"
+              rel="noopener noreferrer"
+              className="inline-flex items-center justify-center rounded-sm bg-gold px-5 py-2.5 text-sm font-medium text-ink transition-colors hover:bg-gold-light"
+            >
+              Join on Facebook
+            </a>
           )}
+          {event.telegramUrl && (
+            <a
+              href={event.telegramUrl}
+              target="_blank"
+              rel="noopener noreferrer"
+              className="inline-flex items-center justify-center rounded-sm bg-paper px-5 py-2.5 text-sm font-medium text-ink transition-colors hover:bg-paper-dim"
+            >
+              Join on Telegram
+            </a>
+          )}
+          {!event.facebookUrl && !event.telegramUrl && event.registrationUrl ? (
+            <Button href={event.registrationUrl}>Register</Button>
+          ) : !event.facebookUrl && !event.telegramUrl ? (
+            <Button href="/contact">Ask about this event</Button>
+          ) : null}
           <Button href="/events" variant="secondary">
             Back to all events
           </Button>

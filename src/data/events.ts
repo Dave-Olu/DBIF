@@ -1,11 +1,6 @@
 import type { EventItem } from "@/lib/types";
 import { todayInLagos } from "@/lib/utils";
 
-/**
- * Sample/illustrative events only — demonstrates the Events page structure
- * (PRD §9.4). Replace with confirmed dates, venues, and speakers from DBIF
- * leadership before launch; do not publish these as real events.
- */
 export const events: EventItem[] = [
   {
     slug: "leadership-summit-2026",
@@ -35,19 +30,49 @@ export const events: EventItem[] = [
     featured: true,
     status: "upcoming",
   },
-  // {
-  //   slug: "year-end-crossover-vigil",
-  //   title: "Year-End Crossover Vigil",
-  //   date: "2026-12-31",
-  //   time: "10:00 PM",
-  //   venue: "Lagos Main Auditorium (livestreamed)",
-  //   description:
-  //     "A night of prayer and worship into the new year, open to all DBIF locations and the online community.",
-  //   speakers: [],
-  //   registrationUrl: null,
-  //   featured: true,
-  //   status: "upcoming",
-  // },
+  {
+    slug: "turning-up-your-down-times-modakeke-2026",
+    title: "Turning Up Your Down Times",
+    date: "2026-11-22",
+    time: "2:00 PM–5:00 PM (WAT)",
+    venue: "@Elok Cocoa Store, Olorunsogo along Town Hall, Modakeke, Osun State",
+    description:
+      "DBIF returns to Modakeke for an uplifting gathering themed “Turning Up Your Down Times” (Genesis 50:20). Prolocutor: Julius A. Awoniyi.",
+    speakers: ["Julius A. Awoniyi"],
+    registrationUrl: null,
+    posterUrl: "/events/turning-up-down-times-modakeke-2026.png",
+    featured: true,
+    status: "upcoming",
+  },
+  {
+    slug: "seven-compulsory-prayer-points-ondo-2026",
+    title: "7 Compulsory Prayer Points for Every Winning Believer",
+    date: "2026-11-29",
+    time: "2:00 PM–5:00 PM (WAT)",
+    venue: "Noble Academy N/P School, Opp First Bank, End of the Street, Yaba-Ondo, Ondo State",
+    description:
+      "Join DBIF in Ondo for this crucial-season gathering and a focused time of prayer. Prolocutor: Julius A. Awoniyi.",
+    speakers: ["Julius A. Awoniyi"],
+    registrationUrl: null,
+    posterUrl: "/events/prayer-points-ondo-2026.png",
+    featured: true,
+    status: "upcoming",
+  },
+  {
+    slug: "pre-crossover-online-vigil-2026",
+    title: "Pre-Crossover Online Vigil",
+    date: "2026-12-30",
+    time: "12:00 AM–1:30 AM (WAT)",
+    venue: "Online via DBIF Facebook and Telegram",
+    description:
+      "Join the DBIF community online for a 90-minute pre-crossover vigil. The vigil streams on Facebook and Telegram.",
+    speakers: [],
+    registrationUrl: null,
+    facebookUrl: "https://www.facebook.com/share/g/1KLGVAoTT7/",
+    telegramUrl: "https://t.me/dbif5",
+    featured: true,
+    status: "upcoming",
+  },
   {
     slug: "singles-fellowship-retreat",
     title: "Singles Fellowship Retreat",

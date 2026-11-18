@@ -24,8 +24,7 @@ export function SermonListItem({ sermon }: { sermon: Sermon }) {
           {sermon.date && <span className="text-sm text-ink/50">{formatDate(sermon.date)}</span>}
         </div>
         <p className="mt-1 text-sm text-ink/60">
-          {sermon.speaker} · {sermon.category}
-          {sermon.scripture ? ` · ${sermon.scripture}` : ""}
+          {[sermon.speaker, sermon.category, sermon.scripture].filter(Boolean).join(" · ")}
         </p>
         <p className="mt-2 text-sm leading-relaxed text-ink/70">{sermon.description}</p>
       </div>

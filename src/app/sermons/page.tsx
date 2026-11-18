@@ -1,7 +1,6 @@
 import type { Metadata } from "next";
 import { PageHeader } from "@/components/PageHeader";
 import { Container } from "@/components/Container";
-import { PreviewNotice } from "@/components/PreviewNotice";
 import { SermonListItem } from "@/components/SermonListItem";
 import { getSermons } from "@/lib/content";
 
@@ -27,7 +26,6 @@ export default async function SermonsPage() {
         intro="Teaching across Marriage, Finance/Business, Leadership, and Deliverance."
       />
       <Container narrow className="py-16 sm:py-20">
-        <PreviewNotice />
         <div className="space-y-10">
           {groupedSermons.map(({ category, items }) => (
             <section

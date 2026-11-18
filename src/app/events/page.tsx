@@ -16,18 +16,35 @@ export default async function EventsPage() {
   return (
     <>
       <PageHeader title="Events" intro="Programs, conferences, and vigils across DBIF's locations." />
-      <Container className="py-16 sm:py-20">
-        <h2 className="font-display text-2xl font-medium text-ink">Upcoming</h2>
-        <div className="mt-6 grid gap-4 sm:grid-cols-2">
+      <Container className="py-12 sm:py-16">
+        <div className="flex flex-wrap items-end justify-between gap-4 border-b border-ink/10 pb-5">
+          <div>
+            <p className="text-xs font-semibold uppercase tracking-[0.18em] text-forest">Gather, grow & connect</p>
+            <h2 className="mt-2 font-display text-3xl font-medium text-ink sm:text-4xl">Upcoming events</h2>
+          </div>
+          <p className="max-w-md text-sm leading-relaxed text-ink/60">
+            Find a gathering near you or join our online community. Select an event for the full details.
+          </p>
+        </div>
+        {upcomingEvents.length > 0 ? (
+          <div className="mt-7 grid gap-5 md:grid-cols-2">
           {upcomingEvents.map((event) => (
             <EventCard key={event.slug} event={event} />
           ))}
-        </div>
+          </div>
+        ) : (
+          <p className="mt-7 border border-dashed border-ink/20 px-5 py-8 text-ink/60">
+            There are no upcoming events at the moment. Please check back soon.
+          </p>
+        )}
 
         {pastEvents.length > 0 && (
           <>
-            <h2 className="mt-16 font-display text-2xl font-medium text-ink">Past events</h2>
-            <div className="mt-6 grid gap-4 sm:grid-cols-2">
+            <div className="mt-16 border-b border-ink/10 pb-5">
+              <p className="text-xs font-semibold uppercase tracking-[0.18em] text-ink/50">Looking back</p>
+              <h2 className="mt-2 font-display text-3xl font-medium text-ink sm:text-4xl">Past events</h2>
+            </div>
+            <div className="mt-7 grid gap-5 md:grid-cols-2">
               {pastEvents.map((event) => (
                 <EventCard key={event.slug} event={event} />
               ))}

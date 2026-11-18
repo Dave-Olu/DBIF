@@ -1,4 +1,4 @@
-import { createHmac, timingSafeEqual } from "crypto";
+import { createHmac } from "crypto";
 import { getDonation, patchDonation, type Donation } from "@/lib/ledger";
 import { sendMail } from "@/lib/mail";
 import { formatNaira } from "@/lib/utils";
@@ -57,13 +57,26 @@ async function verifyTransaction(reference: string): Promise<VerifyData> {
   return json.data as VerifyData;
 }
 
+function constantTimeEqual(a: Uint8Array, b: Uint8Array): boolean {
+  if (a.length !== b.length) return false;
+  let diff = 0;
+  for (let i = 0; i < a.length; i += 1) {
+    const left = a[i] ?? 0;
+    const right = b[i] ?? 0;
+    diff |= left ^ right;
+  }
+  return diff === 0;
+}
+
 /** True only if `signature` is the HMAC-SHA512 of the raw body under our secret key. */
 export function isValidSignature(rawBody: string, signature: string | null): boolean {
   if (!signature) return false;
-  const expected = createHmac("sha512", secretKey()).update(rawBody).digest("hex");
-  const a = Buffer.from(expected);
-  const b = Buffer.from(signature);
-  return a.length === b.length && timingSafeEqual(a, b);
+  const expectedHex = createHmac("sha512", secretKey()).update(rawBody).digest("hex").toLowerCase();
+  const provided = signature.trim().toLowerCase();
+  if (expectedHex.length !== provided.length) return false;
+  const expected = new TextEncoder().encode(expectedHex);
+  const providedBytes = new TextEncoder().encode(provided);
+  return constantTimeEqual(new Uint8Array(expected), new Uint8Array(providedBytes));
 }
 
 /**

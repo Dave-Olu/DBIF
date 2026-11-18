@@ -1,6 +1,6 @@
 import { cookies } from "next/headers";
 import { redirect } from "next/navigation";
-import { createHash, timingSafeEqual } from "crypto";
+import { createHash } from "crypto";
 import { SESSION_COOKIE, verifySession, type Role, type Session } from "@/lib/session";
 
 interface AdminUser {
@@ -28,14 +28,25 @@ function users(): AdminUser[] {
 
 const digest = (s: string) => createHash("sha256").update(s).digest();
 
+function constantTimeEqual(a: Uint8Array, b: Uint8Array): boolean {
+  if (a.length !== b.length) return false;
+  let diff = 0;
+  for (let i = 0; i < a.length; i += 1) {
+    const left = a[i] ?? 0;
+    const right = b[i] ?? 0;
+    diff |= left ^ right;
+  }
+  return diff === 0;
+}
+
 export function checkCredentials(email: string, password: string): AdminUser | null {
   const wanted = email.trim().toLowerCase();
-  let match: AdminUser | null = null;
+  const supplied = digest(password);
   for (const u of users()) {
-    const passOk = timingSafeEqual(digest(u.password), digest(password));
-    if (u.email.toLowerCase() === wanted && passOk) match = u;
+    const expected = digest(u.password);
+    if (u.email.toLowerCase() === wanted && constantTimeEqual(new Uint8Array(expected), new Uint8Array(supplied))) return u;
   }
-  return match;
+  return null;
 }
 
 export async function getSession(): Promise<Session | null> {
