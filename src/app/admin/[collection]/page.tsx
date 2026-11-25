@@ -2,6 +2,7 @@ import { notFound } from "next/navigation";
 import { requireRole } from "@/lib/auth";
 import { collections } from "@/lib/admin-schema";
 import { listItems, type CollectionName } from "@/lib/content";
+import { describeStoreError } from "@/lib/store";
 import { saveItemAction, deleteItemAction } from "../actions";
 import { FieldInput } from "@/components/admin/FieldInput";
 import { ConfirmButton } from "@/components/admin/ConfirmButton";
@@ -13,11 +14,17 @@ export default async function CollectionPage({
   if (!(params.collection in collections)) notFound();
   const name = params.collection as CollectionName;
   const def = collections[name];
-  const items = await listItems(name);
+  let items: Awaited<ReturnType<typeof listItems>> = [];
+  let storageError: string | null = null;
+  try {
+    items = await listItems(name);
+  } catch (error) {
+    storageError = describeStoreError(error);
+  }
   const btn = "rounded-sm bg-ink px-5 py-2 text-sm font-medium text-paper hover:bg-ink-light";
 
   const form = (item: Record<string, unknown> | null) => (
-    <form action={saveItemAction} className="space-y-4">
+    <form action={saveItemAction} encType="multipart/form-data" className="space-y-4">
       <input type="hidden" name="collection" value={name} />
       {item && <input type="hidden" name="slug" value={String(item.slug)} />}
       {def.fields.map((f) => (
@@ -37,6 +44,7 @@ export default async function CollectionPage({
       )}
       {searchParams.saved && <p role="status" className="mt-4 border border-forest/30 bg-forest/5 px-4 py-2 text-sm text-forest">Saved. The public site is updated.</p>}
       {searchParams.error && <p role="alert" className="mt-4 border border-red-300 bg-red-50 px-4 py-2 text-sm text-red-800">{searchParams.error}</p>}
+      {storageError && <p role="alert" className="mt-4 border border-red-300 bg-red-50 px-4 py-2 text-sm text-red-800">{storageError}</p>}
 
       <details className="mt-6 border border-ink/15 bg-paper p-5">
         <summary className="cursor-pointer font-medium text-ink">Add a new {def.singular}</summary>

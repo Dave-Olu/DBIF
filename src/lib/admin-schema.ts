@@ -31,7 +31,7 @@ export const collections: Record<CollectionName, CollectionDef> = {
       { name: "description", label: "Description", type: "textarea", required: true },
       { name: "speakers", label: "Speakers", type: "list", hint: "Separate names with commas" },
       { name: "registrationUrl", label: "Registration link", type: "url", hint: "Optional. Must start with https://" },
-      { name: "posterUrl", label: "Event image", type: "image", hint: "Optional. Use an https:// image URL or a site path such as /events/poster.png." },
+      { name: "posterUrl", label: "Event image", type: "image", hint: "Optional. Choose a JPEG, PNG, or WebP image from your device (maximum 4 MB)." },
       { name: "facebookUrl", label: "Facebook event / livestream link", type: "url", hint: "Optional. Must start with https://" },
       { name: "telegramUrl", label: "Telegram event link", type: "url", hint: "Optional. Must start with https://" },
       { name: "featured", label: "Feature on the home page", type: "checkbox" },
@@ -110,6 +110,11 @@ export type ParseResult = { ok: true; item: Item } | { ok: false; error: string 
 export function parseItem(def: CollectionDef, fd: FormData, existingSlugs: string[], editingSlug: string | null): ParseResult {
   const out: Record<string, unknown> = {};
   for (const f of def.fields) {
+    const fileValue = fd.get(f.name);
+    if (f.type === "image" && typeof File !== "undefined" && fileValue instanceof File) {
+      out[f.name] = null;
+      continue;
+    }
     const raw = String(fd.get(f.name) ?? "").trim();
     if (f.type === "checkbox") { out[f.name] = fd.get(f.name) === "on"; continue; }
     if (f.type === "list") { out[f.name] = raw ? raw.split(",").map((x) => x.trim()).filter(Boolean).slice(0, 20) : []; continue; }

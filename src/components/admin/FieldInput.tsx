@@ -14,6 +14,20 @@ export function FieldInput({ field, value, idPrefix }: { field: FieldDef; value:
       </label>
     );
   }
+  if (field.type === "image") {
+    return (
+      <div>
+        <label htmlFor={id} className="mb-1 block text-sm text-ink/70">
+          {field.label}{field.required && <span className="text-red-700"> *</span>}
+        </label>
+        {typeof value === "string" && value && (
+          <p className="mb-2 text-xs text-ink/50">Current image: {value}</p>
+        )}
+        <input id={id} name={field.name} type="file" accept="image/jpeg,image/png,image/webp" className={base} />
+        {field.hint && <p className="mt-1 text-xs text-ink/50">{field.hint}</p>}
+      </div>
+    );
+  }
   return (
     <div>
       <label htmlFor={id} className="mb-1 block text-sm text-ink/70">

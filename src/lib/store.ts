@@ -12,6 +12,20 @@ let database: ReturnType<typeof postgres> | undefined;
 
 export const getDataDirectory = () => DIR;
 
+export function describeStoreError(error: unknown): string {
+  const message = error instanceof Error ? error.message : String(error);
+  if (message.includes("DATABASE_URL must be configured")) {
+    return "Event storage is not configured. Set DATABASE_URL in the hosted environment and redeploy.";
+  }
+  if (/relation .*content_store.* does not exist/i.test(message) || message.includes('public.content_store')) {
+    return "The Supabase database migration is missing. Apply supabase/migrations/20261028000000_initial.sql, then try again.";
+  }
+  if (/password authentication failed|invalid_catalog_name|connection refused|timed out|connect_timeout/i.test(message)) {
+    return "The database connection failed. Check DATABASE_URL and Supabase database availability.";
+  }
+  return "Event storage could not be reached. Check the server logs and database configuration.";
+}
+
 function getDatabase() {
   const connectionString = process.env.DATABASE_URL;
   if (!connectionString) {
