@@ -83,6 +83,10 @@ export function parseHttpsUrl(v: string): string | null {
   }
 }
 
+export function isUploadedFile(value: FormDataEntryValue | null): value is File {
+  return value !== null && typeof value !== "string";
+}
+
 function parseMapUrl(v: string): string | null {
   const u = parseHttpsUrl(v);
   if (!u) return null;
@@ -111,7 +115,7 @@ export function parseItem(def: CollectionDef, fd: FormData, existingSlugs: strin
   const out: Record<string, unknown> = {};
   for (const f of def.fields) {
     const fileValue = fd.get(f.name);
-    if (f.type === "image" && typeof File !== "undefined" && fileValue instanceof File) {
+    if (f.type === "image" && isUploadedFile(fileValue)) {
       out[f.name] = null;
       continue;
     }

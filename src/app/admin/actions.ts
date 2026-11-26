@@ -6,7 +6,7 @@ import { promises as fs } from "fs";
 import path from "path";
 import { randomUUID } from "crypto";
 import { requireRole } from "@/lib/auth";
-import { collections, parseHttpsUrl, parseItem } from "@/lib/admin-schema";
+import { collections, isUploadedFile, parseHttpsUrl, parseItem } from "@/lib/admin-schema";
 import { getGalleryImages, listItems, removeGalleryImage, removeItem, saveAnnouncement, saveSettings, upsertGalleryImage, upsertItem, type CollectionName, type Settings } from "@/lib/content";
 import { describeStoreError, getDataDirectory } from "@/lib/store";
 import type { GalleryImage } from "@/lib/types";
@@ -58,14 +58,14 @@ export async function saveItemAction(fd: FormData) {
   try {
     const posterFile = c === "events" ? fd.get("posterUrl") : null;
     let posterUrl: unknown = parsed.item.posterUrl;
-    if (posterFile instanceof File && posterFile.size > 0) {
+    if (isUploadedFile(posterFile) && posterFile.size > 0) {
       posterUrl = await saveEventPoster(posterFile);
     } else if (c === "events" && editing) {
       posterUrl = existingItems.find((item) => item.slug === editing)?.posterUrl ?? null;
     }
     const nextItem = c === "events" ? { ...parsed.item, posterUrl } : parsed.item;
     await upsertItem(c, nextItem);
-    if (c === "events" && posterFile instanceof File && posterFile.size > 0 && typeof posterUrl === "string") {
+    if (c === "events" && isUploadedFile(posterFile) && posterFile.size > 0 && typeof posterUrl === "string") {
       const oldPoster = editing ? existingItems.find((item) => item.slug === editing)?.posterUrl : null;
       if (typeof oldPoster === "string" && oldPoster !== posterUrl) {
         void deleteGalleryAsset(oldPoster).catch(() => undefined);
